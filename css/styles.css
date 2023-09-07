@@ -46,6 +46,11 @@ button {
 
 a {
   padding-right: 2px;
+  color: blue;
+}
+
+a:visited {
+  color: blue;
 }
 
 .spacer {

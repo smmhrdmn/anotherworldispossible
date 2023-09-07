@@ -1,0 +1,226 @@
+/* body */
+body {
+  position: relative;
+  padding-top: 28px;
+  line-height: 1.2;
+  margin: 24px auto;
+  max-width: 95%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+nav {
+  position: fixed;
+  top: 28px;
+  width: 95%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  z-index: 100;
+  height: 20px;
+  margin: 0 auto;
+}
+
+button {
+  display: inline-block;
+  vertical-align: middle;
+  background-color: #f4f4f4;
+  border: 1.5px solid #eeeeee;
+  border: none;
+  text-align: center;
+  border-radius: 20px;
+  height: min-content;
+  font-size: 12px;
+}
+
+.moji {
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.issue {
+  position: fixed;
+  bottom: 0;
+  padding-bottom: 24px;
+}
+
+a {
+  padding-right: 2px;
+}
+
+.spacer {
+  height: 28px;
+}
+
+hr {
+  background: #eee;
+  height: 1px;
+  border: 0px;
+}
+
+
+
+/* work */
+.work-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: center;
+}
+
+.work-project {
+  width: 33.33%;
+  align-self: auto;
+  padding: 2px;
+}
+
+.work-project img {
+  border: 1.5px solid #eeeeee;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.work p {
+  margin: 5px 0 0 0;
+}
+
+.project-hero {
+  padding-right: 0px;
+}
+
+.project-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+/* case study*/
+.casestudy-container {
+  position: relative;
+  padding-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  max-width: 768px;
+  margin: 0 auto;
+}
+
+.casestudy {
+  width: 100%;
+  align-self: auto;
+  position: relative;
+  
+}
+
+.casestudy img {
+  border: 1px solid #eeeeee;
+  border-radius: 10px;
+}
+
+.casestudy .na {
+  border: none;
+}
+
+.casestudy-block-f {
+  background-color: #f4f4f4;
+  padding: 28px;
+  border-radius: 15px;
+}
+
+.casestudy-block-b {
+  background-color: #fff;
+  border: 1.5px solid #eeeeee;
+  padding: 28px;
+  border-radius: 15px;
+}
+
+.casestudy-block-e {
+  background-color: #fff;
+  padding: 28px;
+  border-radius: 15px;
+}
+
+
+/* galleries */
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content:space-evenly;
+  width: 100%;
+}
+
+.gallery-image {
+  width: 50%;
+  align-self: auto;
+}
+
+.gallery-image img {
+  border: none;
+  padding: 2px;
+}
+
+.gallery-x {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.gallery-x-image {
+  width: 25%;
+  align-self: auto;
+}
+
+.gallery-x-image img {
+  border: none;
+  padding: 2px;
+}
+
+
+/* breakpoints */
+@media (max-width: 768px) {
+  
+  .work-project {
+    width: 50%;
+  }
+
+  .casestudy {
+    width: 100%;
+  }
+
+}
+
+@media (max-width: 425px) {
+  
+  .work-project {
+    width: 100%;
+  }
+
+  body {
+    font-size: 12px;
+  }
+
+  .gallery-image {
+    width: 100%;
+  }
+
+  .gallery-x-image {
+    width: 50%;
+  }
+
+  .casestudy-block-f {
+    padding: 14px;
+  }
+  
+  .casestudy-block-b {
+    padding: 14px;
+  }
+  
+  .casestudy-block-e {
+    padding: 14px;
+  }
+
+  .spacer {
+    height: 14px;
+  }
+}

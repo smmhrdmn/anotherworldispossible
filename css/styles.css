@@ -36,6 +36,7 @@ button {
 .moji {
   text-decoration: none;
   font-size: 16px;
+  padding: 2px 0;
 }
 
 .issue {
@@ -72,6 +73,8 @@ hr {
 
 /* work */
 .work-container {
+  position: relative;
+  padding-top: 28px;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;

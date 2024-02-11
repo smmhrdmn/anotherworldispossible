@@ -20,12 +20,23 @@ nav {
   margin: 0 auto;
 }
 
-button {
+.a-button {
   display: inline-block;
   vertical-align: middle;
-  background-color: #f4f4f4;
-  border: 1.5px solid #eeeeee;
+  background-color: #eaeaea;
   border: none;
+  text-align: center;
+  border-radius: 20px;
+  height: min-content;
+  font-size: 12px;
+  color:black
+}
+
+.b-button {
+  display: inline-block;
+  vertical-align: middle;
+  background-color: #ffffff;
+  border: 1px solid #eaeaea;
   text-align: center;
   border-radius: 20px;
   height: min-content;
@@ -60,7 +71,7 @@ a:active {
 
 
 .spacer {
-  height: 28px;
+  height: 24px;
 }
 
 hr {
@@ -104,7 +115,6 @@ hr {
 .project-title {
   display: flex;
   align-items: center;
-  justify-content: space-between;
 }
 
 
@@ -113,7 +123,8 @@ hr {
   position: relative;
   padding-top: 28px;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  flex-wrap: nowrap;
   align-content: center;
   max-width: 768px;
   margin: 0 auto;
@@ -135,22 +146,22 @@ hr {
   border: none;
 }
 
-.casestudy-block-f {
+.casestudy-block-fill {
   background-color: #f4f4f4;
-  padding: 28px;
+  padding: 24px;
   border-radius: 15px;
 }
 
-.casestudy-block-b {
+.casestudy-block-border {
   background-color: #fff;
   border: 1.5px solid #eeeeee;
-  padding: 28px;
+  padding: 24px;
   border-radius: 15px;
 }
 
-.casestudy-block-e {
+.casestudy-block-body {
   background-color: #fff;
-  padding: 28px;
+  padding:24px;
   border-radius: 15px;
 }
 
@@ -214,7 +225,7 @@ hr {
   }
 
   .gallery-image {
-    width: 100%;
+    width: 50%;
   }
 
   .gallery-x-image {

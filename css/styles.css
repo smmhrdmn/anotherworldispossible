@@ -1,63 +1,13 @@
-/* body */
 body {
-  position: relative;
-  padding-top: 28px;
-  line-height: 1.2;
-  margin: 24px auto;
-  max-width: 95%;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 14px;
-}
-
-nav {
-  position: fixed;
-  top: 28px;
-  width: 95%;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  z-index: 100;
-  margin: 0 auto;
-}
-
-.a-button {
-  display: inline-block;
-  vertical-align: middle;
-  background-color: #eaeaea;
-  border: none;
-  text-align: center;
-  border-radius: 20px;
-  height: min-content;
-  font-size: 12px;
-  color:black
-}
-
-.b-button {
-  display: inline-block;
-  vertical-align: middle;
-  background-color: #ffffff;
-  border: 1px solid #eaeaea;
-  text-align: center;
-  border-radius: 20px;
-  height: min-content;
-  font-size: 12px;
-  color:black
-}
-
-.moji {
-  text-decoration: none;
+  line-height: 1.5;
   font-size: 16px;
-  padding: 2px 0;
-}
-
-.issue {
-  position: fixed;
-  bottom: 0;
-  padding-bottom: 24px;
+  padding: 0px 8px;
+  margin: 50px auto;
+  max-width: 650px;
 }
 
 a {
-  padding-right: 2px;
+  padding-right: 4px;
   color: blue;
 }
 
@@ -69,182 +19,14 @@ a:active {
   color: red;
 }
 
-
-.spacer {
-  height: 24px;
+footer {
+  line-height: inherit;
+  padding: 16px 0px;
 }
 
-hr {
-  background: #eee;
-  height: 1px;
-  border: 0px;
-}
-
-
-
-/* work */
-.work-container {
-  position: relative;
-  padding-top: 28px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-content: center;
-}
-
-.work-project {
-  width: 33.33%;
-  align-self: auto;
-  padding: 2px;
-}
-
-.work-project img {
-  border: 1.5px solid #eeeeee;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-.work p {
-  margin: 5px 0 0 0;
-}
-
-.project-hero {
-  padding-right: 0px;
-}
-
-.project-title {
-  display: flex;
-  align-items: center;
-}
-
-
-/* case study*/
-.casestudy-container {
-  position: relative;
-  padding-top: 28px;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  align-content: center;
-  max-width: 768px;
-  margin: 0 auto;
-}
-
-.casestudy {
-  width: 100%;
-  align-self: auto;
-  position: relative;
-  
-}
-
-.casestudy img {
-  border: 1px solid #eeeeee;
-  border-radius: 10px;
-}
-
-.casestudy .na {
-  border: none;
-}
-
-.casestudy-block-fill {
-  background-color: #f4f4f4;
-  padding: 24px;
-  border-radius: 15px;
-}
-
-.casestudy-block-border {
-  background-color: #fff;
-  border: 1.5px solid #eeeeee;
-  padding: 24px;
-  border-radius: 15px;
-}
-
-.casestudy-block-body {
-  background-color: #fff;
-  padding:24px;
-  border-radius: 15px;
-}
-
-
-/* galleries */
-.gallery {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content:space-evenly;
-  width: 100%;
-}
-
-.gallery-image {
-  width: 50%;
-  align-self: auto;
-}
-
-.gallery-image img {
-  border: none;
-  padding: 2px;
-}
-
-.gallery-x {
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-}
-
-.gallery-x-image {
-  width: 25%;
-  align-self: auto;
-}
-
-.gallery-x-image img {
-  border: none;
-  padding: 2px;
-}
-
-
-/* breakpoints */
-@media (max-width: 768px) {
-  
-  .work-project {
-    width: 50%;
-  }
-
-  .casestudy {
-    width: 100%;
-  }
-
-}
-
-@media (max-width: 425px) {
-  
-  .work-project {
-    width: 100%;
-  }
-
-  body {
-    font-size: 12px;
-  }
-
-  .gallery-image {
-    width: 50%;
-  }
-
-  .gallery-x-image {
-    width: 50%;
-  }
-
-  .casestudy-block-f {
-    padding: 14px;
-  }
-  
-  .casestudy-block-b {
-    padding: 14px;
-  }
-  
-  .casestudy-block-e {
-    padding: 14px;
-  }
-
-  .spacer {
-    height: 14px;
-  }
+img, iframe {
+  vertical-align: bottom;
+  max-width: 100%;
+  border: .1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 24px;
 }

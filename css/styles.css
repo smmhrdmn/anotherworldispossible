@@ -1,14 +1,19 @@
 body {
   line-height: 1.5;
   font-size: 16px;
-  padding: 0px 8px;
-  margin: 50px auto;
-  max-width: 650px;
+  font-family: sans-serif;
+  font-weight: 400;
+  padding: 0px 16px;
+  margin: 80px auto;
+  max-width: 640px;
 }
 
 a {
-  padding-right: 4px;
   color: blue;
+}
+
+.footer-link {
+  padding-right: 4px;
 }
 
 a:visited {
@@ -21,12 +26,20 @@ a:active {
 
 footer {
   line-height: inherit;
-  padding: 16px 0px;
+  padding: 24px 0px;
 }
 
 img, iframe {
   vertical-align: bottom;
   max-width: 100%;
   border: .1px solid rgba(0, 0, 0, 0.1);
-  margin-top: 24px;
+  margin-top: 32px;
+}
+
+blockquote {
+    font-style: italic;
+    border-left: 2px solid  rgba(0, 0, 0, 0.1);
+    padding-left: 10px;
+    color: #555555;
+    margin-left: 0;
 }

@@ -1,6 +1,6 @@
 body {
-  line-height: 1.4;
-  font-size: 16px;
+  line-height: 1.5;
+  font-size: 15px;
   font-family: sans-serif;
   font-weight: 400;
   margin: 0;
@@ -12,15 +12,18 @@ body {
 
 .content-wrapper {
   max-width: 640px;
-  margin: 80px auto;
+  margin: 64px auto;
   padding: 0 16px;
   flex: 1;
+}
+
+.txt2 {
+  color: #666;
 }
 
 a {
   color: blue;
 }
-
 
 a:visited {
   color: blue;
@@ -48,15 +51,10 @@ img, iframe {
   border: .1px solid rgba(0, 0, 0, 0.1);
 }
 
-.quote {
-  font-style: italic;
-  color: #606060;
-}
-
 .outer-container {
-  padding-top: 12px;
+  padding-top: 32px;
 }
 
 .inner-container {
-  padding-top: 12px;
+  padding-top: 32px;
 }

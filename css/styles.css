@@ -49,6 +49,7 @@ img, iframe {
   vertical-align: bottom;
   max-width: 100%;
   border: 1px solid #f5f5f5;
+  border-radius: 8px;
 }
 
 .m-container {

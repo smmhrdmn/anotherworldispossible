@@ -17,6 +17,56 @@ body {
   flex: 1;
 }
 
+.content-wrapper > section {
+  margin: 0;
+  padding: 0;
+}
+
+.content-wrapper > section + section {
+  margin-top: 48px;
+}
+
+/* Reset margins on common elements */
+.content-wrapper p,
+.content-wrapper b {
+  margin: 0;
+}
+
+/* Internal spacing within sections (12px) */
+.content-wrapper .bio-section > b {
+  display: block;
+  margin-top: 12px;
+}
+
+.content-wrapper .bio-section > b + p {
+  margin-top: 12px;
+}
+
+.content-wrapper .work-section > p + .projects-grid {
+  margin-top: 12px;
+}
+
+.content-wrapper .links-section > p + .links-content {
+  margin-top: 12px;
+}
+
+/* CV page section spacing - 12px between title and first item */
+.content-wrapper .cv-section > p.txt2 + * {
+  margin-top: 12px;
+}
+
+/* 12px between subsequent items in CV sections */
+.content-wrapper .cv-section > div + div,
+.content-wrapper .cv-section > div + .s-container,
+.content-wrapper .cv-section > .s-container + div,
+.content-wrapper .cv-section > .s-container + .s-container,
+.content-wrapper .cv-section > .s + div,
+.content-wrapper .cv-section > .s + .s-container,
+.content-wrapper .cv-section > div + .s,
+.content-wrapper .cv-section > .s + .s {
+  margin-top: 24px;
+}
+
 .txt2 {
   color: #666;
 }
@@ -50,15 +100,111 @@ img, iframe {
   max-width: 100%;
   border: 1px solid #f5f5f5;
   border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
-.m-container {
-  padding-top: 36px;
+.links-content {
+  display: inline-block;
 }
 
-.s-container {
-  padding-top: 12px;
+.projects-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
 }
+
+.project-item {
+  position: relative;
+  display: block;
+}
+
+.project-item > a {
+  position: relative;
+  display: block;
+  width: 100%;
+  z-index: 1;
+}
+
+.project-item > img {
+  position: relative;
+  display: block;
+  width: 100%;
+  z-index: 1;
+}
+
+.project-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: none;
+  box-sizing: border-box;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.project-item p {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  visibility: hidden;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid #f5f5f5;
+  border-radius: 8px;
+  transition: none;
+  pointer-events: none;
+  overflow-y: auto;
+  box-sizing: border-box;
+  z-index: 2;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.project-item:hover {
+  cursor: pointer;
+}
+
+/* Desktop hover behavior only */
+@media (hover: hover) {
+  .project-item:hover img {
+    opacity: 0;
+  }
+
+  .project-item:hover p {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  /* Disable hover during scroll */
+  body.scrolling .project-item:hover img {
+    opacity: 1;
+  }
+
+  body.scrolling .project-item:hover p {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+/* Touch devices - hover disabled, handled by JavaScript */
+@media (hover: none) {
+  .project-item:hover img {
+    opacity: 1;
+  }
+
+  .project-item:hover p {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+/* .s-container spacing is now handled by adjacent sibling selectors in CV sections */
 
 .tag {
   display: inline-block;

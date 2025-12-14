@@ -189,6 +189,17 @@ img, iframe {
     visibility: hidden;
     pointer-events: none;
   }
+
+  /* Prevent initial hover animation if cursor is over item on load */
+  .project-item.no-initial-hover:hover img {
+    opacity: 1;
+  }
+
+  .project-item.no-initial-hover:hover p {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
 }
 
 /* Touch devices - hover disabled, handled by JavaScript */

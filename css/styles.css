@@ -142,6 +142,8 @@ img, iframe {
   box-sizing: border-box;
   transform: translateZ(0);
   backface-visibility: hidden;
+  /* Prevent layout shift during image load */
+  background-color: #fafafa;
 }
 
 .project-item p {

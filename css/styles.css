@@ -127,11 +127,18 @@ img, iframe {
   z-index: 1;
 }
 
-.project-item > img {
+.project-item > img,
+.project-item > picture,
+.project-item > a > picture {
   position: relative;
   display: block;
   width: 100%;
   z-index: 1;
+}
+
+.project-item picture img {
+  width: 100%;
+  height: auto;
 }
 
 .project-item img {

@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AWIP</title>
   <link rel="icon" href="pix/AWIP-Favicon.png">
+  <link rel="preload" as="image" href="pix/SD-2.webp" type="image/webp" fetchpriority="high">
   <link rel="preload" as="image" href="pix/SD-2.png" fetchpriority="high">
   <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -22,28 +23,49 @@
     <section class="work-section">
       <div class="projects-grid">
       <div class="project-item">
-        <img src="pix/SD-2.png" fetchpriority="high" decoding="async">
+        <picture>
+          <source srcset="pix/SD-2.webp" type="image/webp">
+          <img src="pix/SD-2.png" fetchpriority="high" decoding="async" alt="SameDay project">
+        </picture>
         <p><a href="https://smmhrdmn.github.io/SameDay/">SameDay</a> – PWA that lets you compare weather data for any given date across multiple years.</p>
       </div>
 
       <div class="project-item">
-        <img src="pix/AR-1.png" loading="lazy" decoding="async">
+        <picture>
+          <source srcset="pix/AR-1.webp" type="image/webp">
+          <img src="pix/AR-1.png" loading="lazy" decoding="async" alt="Are.na iOS project">
+        </picture>
         <p><a href="https://www.figma.com/design/CYGcwpKwuz5OWXUr8qSKVT/Are.na-iOS--Public-?node-id=4-5707&t=UBYvUi1WPlupEt1Q-1">Are.na iOS</a> – Unofficial design exploration for the new <a href="https://www.are.na/">Are.na</a> iOS app.</p>
       </div>
 
       <div class="project-item">
-        <a href="https://explorer.penumbra.zone/"><img src="pix/NCT-1.png" loading="lazy" decoding="async"></a>
+        <a href="https://explorer.penumbra.zone/">
+          <picture>
+            <source srcset="pix/NCT-1.webp" type="image/webp">
+            <img src="pix/NCT-1.png" loading="lazy" decoding="async" alt="Noctis project">
+          </picture>
+        </a>
         <p><a href="https://explorer.penumbra.zone/">Noctis</a> – Privacy-focused block explorer built for the Penumbra blockchain. Noctis allows users to access and understand blocks, transactions, and other data on Penumbra without compromising privacy.</p>
       </div>
           
       <div class="project-item">
-        <a href="https://praxwallet.com/"><img src="pix/PRX-1.png" loading="lazy" decoding="async"></a>
+        <a href="https://praxwallet.com/">
+          <picture>
+            <source srcset="pix/PRX-1.webp" type="image/webp">
+            <img src="pix/PRX-1.png" loading="lazy" decoding="async" alt="Prax Wallet project">
+          </picture>
+        </a>
         <p><a href="https://praxwallet.com/">Prax Wallet</a> – Landing page designed to improve the wallet onboarding experience and help users get up to speed with Penumbra.</p>
       </div>
     
 
       <div class="project-item">
-        <a href="https://www.figma.com/community/file/1533133479960869236/penumbra-web-ui"><img src="pix/PDS-1.png" loading="lazy" decoding="async"></a>
+        <a href="https://www.figma.com/community/file/1533133479960869236/penumbra-web-ui">
+          <picture>
+            <source srcset="pix/PDS-1.webp" type="image/webp">
+            <img src="pix/PDS-1.png" loading="lazy" decoding="async" alt="Penumbra Design System project">
+          </picture>
+        </a>
         <p><a href="https://www.figma.com/community/file/1533133479960869236/penumbra-web-ui">Penumbra Design System</a> – Modular design system with 40+ open-source components created in order to streamline the development of Penumbra interfaces, such as <a href="https://dex.penumbra.zone/explore">Veil</a>, <a href="https://www.figma.com/community/file/1532814735042480429/minifront-v2">Minifront</a>, and <a href="https://explorer.penumbra.zone/">Noctis</a>.</p>
       </div>
 
@@ -53,17 +75,32 @@
       </div> -->
 
       <div class="project-item">
-        <a href="https://www.figma.com/proto/lVbhBaLJkMeDbYEtr6uFk5/Hyper-C%3A-penumbra-brand-guidelines?page-id=4171%3A9&node-id=4171-110&viewport=12%2C-46%2C0.13&t=ZcWTF4WDbERCg3wh-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=4171%3A110"><img src="pix/Hyper-C-1.png" loading="lazy" decoding="async"></a>
+        <a href="https://www.figma.com/proto/lVbhBaLJkMeDbYEtr6uFk5/Hyper-C%3A-penumbra-brand-guidelines?page-id=4171%3A9&node-id=4171-110&viewport=12%2C-46%2C0.13&t=ZcWTF4WDbERCg3wh-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=4171%3A110">
+          <picture>
+            <source srcset="pix/Hyper-C-1.webp" type="image/webp">
+            <img src="pix/Hyper-C-1.png" loading="lazy" decoding="async" alt="Hyper-C project">
+          </picture>
+        </a>
         <p><a href="https://www.figma.com/proto/lVbhBaLJkMeDbYEtr6uFk5/Hyper-C%3A-penumbra-brand-guidelines?page-id=4171%3A9&node-id=4171-110&viewport=12%2C-46%2C0.13&t=ZcWTF4WDbERCg3wh-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=4171%3A110">Hyper-C</a> – Foundational guidelines that inform the Penumbra ecosystem's branding, values, positioning, and more.</p>
       </div>
 
       <div class="project-item">
-        <a href="https://www.recidiviz.org/public-data#justicecounts"><img src="pix/Recidiviz-1.png" loading="lazy" decoding="async"></a>
+        <a href="https://www.recidiviz.org/public-data#justicecounts">
+          <picture>
+            <source srcset="pix/Recidiviz-1.webp" type="image/webp">
+            <img src="pix/Recidiviz-1.png" loading="lazy" decoding="async" alt="Recidiviz project">
+          </picture>
+        </a>
         <p><a href="https://www.recidiviz.org/public-data#justicecounts">Recidiviz</a> – Dashboard application supporting public data initiatives to help reduce the rate and duration of incarcerations in the US.</p>
       </div>
 
       <div class="project-item">
-        <a href="https://github.com/smmhrdmn/WeatherBot"><img src="pix/WB-1.png" loading="lazy" decoding="async"></a>
+        <a href="https://github.com/smmhrdmn/WeatherBot">
+          <picture>
+            <source srcset="pix/WB-1.webp" type="image/webp">
+            <img src="pix/WB-1.png" loading="lazy" decoding="async" alt="WeatherBot project">
+          </picture>
+        </a>
         <p><a href="https://github.com/smmhrdmn/WeatherBot">WeatherBot</a> – Discord bot that allows users to check weather for multiple locations from any Discord channel.</p>
       </div>
 
@@ -73,7 +110,12 @@
       </div> -->
 
         <div class="project-item">
-          <a href="pdf/TSIY.pdf"><img src="pix/tsiy-1.png" loading="lazy" decoding="async"></a>
+          <a href="pdf/TSIY.pdf">
+            <picture>
+              <source srcset="pix/tsiy-1.webp" type="image/webp">
+              <img src="pix/tsiy-1.png" loading="lazy" decoding="async" alt="The Subway Is Yours project">
+            </picture>
+          </a>
           <p><a href="pdf/TSIY.pdf">The Subway Is Yours</a> – Capstone design project promoting fair evasion in the NYC subway system.</p>
         </div>
 

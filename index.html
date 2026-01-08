@@ -13,7 +13,7 @@
 </head>
 
 <body>
-  <div class="content-wrapper">
+  <div class="content-wrapper index-page">
     <section class="bio-section">
       <p>🔵</p>
       <b>Sam Hardman</b>
@@ -23,18 +23,22 @@
     <section class="work-section">
       <div class="projects-grid">
       <div class="project-item">
-        <picture>
-          <source srcset="pix/SD-2.webp" type="image/webp">
-          <img src="pix/SD-2.png" fetchpriority="high" decoding="async" alt="SameDay project">
-        </picture>
+        <a href="https://smmhrdmn.github.io/SameDay/">
+          <picture>
+            <source srcset="pix/SD-2.webp" type="image/webp">
+            <img src="pix/SD-2.png" fetchpriority="high" decoding="async" alt="SameDay project">
+          </picture>
+        </a>
         <p><a href="https://smmhrdmn.github.io/SameDay/">SameDay</a> – PWA that lets you compare weather data for any given date across multiple years.</p>
       </div>
 
       <div class="project-item">
-        <picture>
-          <source srcset="pix/AR-1.webp" type="image/webp">
-          <img src="pix/AR-1.png" loading="lazy" decoding="async" alt="Are.na iOS project">
-        </picture>
+        <a href="https://www.figma.com/design/CYGcwpKwuz5OWXUr8qSKVT/Are.na-iOS--Public-?node-id=4-5707&t=UBYvUi1WPlupEt1Q-1">
+          <picture>
+            <source srcset="pix/AR-1.webp" type="image/webp">
+            <img src="pix/AR-1.png" loading="lazy" decoding="async" alt="Are.na iOS project">
+          </picture>
+        </a>
         <p><a href="https://www.figma.com/design/CYGcwpKwuz5OWXUr8qSKVT/Are.na-iOS--Public-?node-id=4-5707&t=UBYvUi1WPlupEt1Q-1">Are.na iOS</a> – Unofficial design exploration for the new <a href="https://www.are.na/">Are.na</a> iOS app.</p>
       </div>
 
@@ -135,204 +139,8 @@
     </section>
   </div>
 
-  <footer>
-    <p class="txt2"><i>"Favorable conditions never come."</i></p>
-  </footer>
-
   <script>
-    // Track mouse position before DOM loads
-    let initialMouseX = null;
-    let initialMouseY = null;
-    
-    document.addEventListener('mousemove', function(e) {
-      if (initialMouseX === null) {
-        initialMouseX = e.clientX;
-        initialMouseY = e.clientY;
-      }
-    }, { once: false, passive: true });
-    
-    // Match card dimensions to image dimensions for perfect alignment
     document.addEventListener('DOMContentLoaded', function() {
-      const projectItems = document.querySelectorAll('.project-item');
-      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      let autoHideTimers = new Map();
-      let currentlyOpenItem = null;
-      
-      // Check if cursor is over any project item on load and prevent initial hover animation
-      if (!isTouchDevice && initialMouseX !== null && initialMouseY !== null) {
-        // Check cursor position after a short delay to ensure layout is ready
-        setTimeout(function() {
-          projectItems.forEach(function(item) {
-            const img = item.querySelector('img');
-            if (img) {
-              const rect = img.getBoundingClientRect();
-              if (initialMouseX >= rect.left && initialMouseX <= rect.right && 
-                  initialMouseY >= rect.top && initialMouseY <= rect.bottom) {
-                // Cursor is over this item, prevent initial hover animation
-                item.classList.add('no-initial-hover');
-                
-                // Remove the class once mouse moves away
-                item.addEventListener('mouseleave', function() {
-                  item.classList.remove('no-initial-hover');
-                }, { once: true });
-              }
-            }
-          });
-        }, 100);
-      }
-      
-      function hideCardForItem(item) {
-        const img = item.querySelector('img');
-        const card = item.querySelector('p');
-        if (img && card) {
-          // Clear timer
-          if (autoHideTimers.has(item)) {
-            clearTimeout(autoHideTimers.get(item));
-            autoHideTimers.delete(item);
-          }
-          
-          // Hide card
-          img.style.opacity = '1';
-          card.style.opacity = '0';
-          card.style.visibility = 'hidden';
-          card.style.pointerEvents = 'none';
-        }
-      }
-      
-      projectItems.forEach(function(item) {
-        const img = item.querySelector('img');
-        const card = item.querySelector('p');
-        if (img && card) {
-          function setCardDimensions() {
-            // Get the image's actual rendered dimensions
-            const imgRect = img.getBoundingClientRect();
-            
-            // Set card to match image dimensions exactly
-            card.style.width = imgRect.width + 'px';
-            card.style.height = imgRect.height + 'px';
-            card.style.top = '0px';
-            card.style.left = '0px';
-          }
-          setCardDimensions();
-          img.addEventListener('load', setCardDimensions);
-          window.addEventListener('resize', setCardDimensions);
-
-          // Find the main project link (image link or first link in card)
-          const imageLink = item.querySelector('a[href]');
-          const cardLink = card.querySelector('a[href]');
-          const mainLink = imageLink || cardLink;
-
-          // Make card clickable to navigate to main link (desktop)
-          if (!isTouchDevice && mainLink) {
-            card.addEventListener('click', function(e) {
-              // Don't navigate if clicking on a link
-              if (e.target.tagName === 'A' || e.target.closest('a')) {
-                return;
-              }
-              // Navigate to main link
-              window.location.href = mainLink.href;
-            });
-            card.style.cursor = 'pointer';
-          }
-
-          // Mobile auto-hide functionality
-          if (isTouchDevice) {
-            function showCard() {
-              // Clear any existing timer
-              if (autoHideTimers.has(item)) {
-                clearTimeout(autoHideTimers.get(item));
-              }
-              
-              // Show card
-              img.style.opacity = '0';
-              card.style.opacity = '1';
-              card.style.visibility = 'visible';
-              card.style.pointerEvents = 'auto';
-              
-              // Set timer to hide after 6 seconds
-              const timer = setTimeout(function() {
-                img.style.opacity = '1';
-                card.style.opacity = '0';
-                card.style.visibility = 'hidden';
-                card.style.pointerEvents = 'none';
-                autoHideTimers.delete(item);
-                if (currentlyOpenItem === item) {
-                  currentlyOpenItem = null;
-                }
-              }, 6000);
-              
-              autoHideTimers.set(item, timer);
-            }
-
-            function hideCard() {
-              // Clear timer
-              if (autoHideTimers.has(item)) {
-                clearTimeout(autoHideTimers.get(item));
-                autoHideTimers.delete(item);
-              }
-              
-              // Hide card
-              img.style.opacity = '1';
-              card.style.opacity = '0';
-              card.style.visibility = 'hidden';
-              card.style.pointerEvents = 'none';
-            }
-
-            // Handle clicks on mobile - toggle card, links work normally
-            item.addEventListener('click', function(e) {
-              const computedStyle = window.getComputedStyle(card);
-              const isCardVisible = computedStyle.opacity === '1' && computedStyle.visibility === 'visible';
-              
-              // If clicking on image (even if wrapped in link), toggle card
-              if (e.target === img || img.contains(e.target)) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Close any other open cards
-                if (currentlyOpenItem && currentlyOpenItem !== item) {
-                  hideCardForItem(currentlyOpenItem);
-                }
-                
-                if (isCardVisible) {
-                  hideCard();
-                  currentlyOpenItem = null;
-                } else {
-                  showCard();
-                  currentlyOpenItem = item;
-                }
-                return;
-              }
-              
-              // If clicking on a link in the card content, let it navigate normally
-              if (isCardVisible && (e.target.tagName === 'A' || e.target.closest('a'))) {
-                return;
-              }
-              
-              // Otherwise, prevent default to avoid unwanted navigation
-              e.preventDefault();
-            });
-          }
-        }
-      });
-
-      // Disable hover effects during scroll
-      let scrollTimeout;
-      let isScrolling = false;
-      
-      function handleScroll() {
-        if (!isScrolling) {
-          isScrolling = true;
-          document.body.classList.add('scrolling');
-        }
-        
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(function() {
-          isScrolling = false;
-          document.body.classList.remove('scrolling');
-        }, 150);
-      }
-      
-      window.addEventListener('scroll', handleScroll, { passive: true });
     });
   </script>
 

@@ -73,7 +73,8 @@ body {
 }
 
 /* Internal spacing within sections (12px) */
-.content-wrapper .bio-section > b {
+.content-wrapper .bio-section > b,
+.content-wrapper .bio-section > a {
   display: block;
   margin-top: 12px;
 }
@@ -253,7 +254,7 @@ img, iframe {
 
 .project-item p a {
   font-weight: 500;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .project-item p a:hover {

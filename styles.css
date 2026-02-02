@@ -119,18 +119,18 @@ a:focus-visible {
 
 /* Layout */
 .page {
-  display: grid;
-  grid-template-columns: 320px 560px;
-  justify-content: center;
-  gap: 4rem;
-  margin: 0 auto;
-  padding: 8vh 24px 4rem;
+  position: relative;
+  max-width: 600px;
+  margin-left: max(calc(50vw - 300px), calc(240px + 4rem + 4rem));
+  margin-right: auto;
+  padding: 4rem 24px;
 }
 
 .sidebar {
-  position: sticky;
-  top: 8vh;
-  height: fit-content;
+  position: fixed;
+  left: 4rem;
+  top: 4rem;
+  width: 240px;
 }
 
 .sidebar header {
@@ -391,17 +391,17 @@ footer {
   margin-top: 4rem;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1023px) {
   .page {
-    grid-template-columns: 1fr;
-    max-width: 640px;
-    gap: 3rem;
-    padding: 8vh 20px 3rem;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 4rem 20px 3rem;
   }
 
   .sidebar {
     position: static;
-    padding-right: 0;
+    width: 100%;
+    margin-bottom: 3rem;
   }
 
   .sidebar-links,

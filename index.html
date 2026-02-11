@@ -116,6 +116,11 @@
           <h4><a href="pdf/TSIY.pdf">The Subway Is Yours</a></h4>
           <p>Capstone project promoting fare evasion.</p>
         </div>
+        <div class="other-item" id="arena-sketch">
+          <div class="thumbnail arena-placeholder"></div>
+          <h4><a href="https://www.are.na/sam-hardman/sketching-flxy_5ttbdo">Sketching</a></h4>
+          <p>Process, sketches, and work.</p>
+        </div>
       </div>
     </section>
     </main>
@@ -155,6 +160,23 @@
           const temp = Math.round(data.current.temperature_2m) + '°F';
           document.getElementById('nyc-weather').textContent = temp;
           document.getElementById('footer-weather').textContent = temp;
+        })
+        .catch(() => {});
+
+      fetch('https://api.are.na/v2/channels/sketching-flxy_5ttbdo/contents?per=1&sort=position&direction=desc')
+        .then(res => res.json())
+        .then(data => {
+          const block = data.contents[0];
+          if (block && block.image) {
+            const card = document.getElementById('arena-sketch');
+            const placeholder = card.querySelector('.arena-placeholder');
+            const img = document.createElement('img');
+            img.src = block.image.display.url;
+            img.alt = block.title || '';
+            img.className = 'thumbnail';
+            img.loading = 'lazy';
+            placeholder.replaceWith(img);
+          }
         })
         .catch(() => {});
     })();

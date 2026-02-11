@@ -290,6 +290,11 @@ header p strong {
   margin-bottom: 0.75rem;
 }
 
+.arena-placeholder {
+  aspect-ratio: 4 / 3;
+  background: #f0f0f0;
+}
+
 .other-item h4 {
   font-size: 0.95rem;
   font-weight: 500;

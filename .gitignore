@@ -1,8 +1,13 @@
 # Image optimization utility script
 optimize_images.py
 
-# Development versions and old files
-versions/
+# Local archive — old indexes, CVs, worker source. Never committed.
+_versions/
 
+# macOS metadata
+.DS_Store
 
-
+# Claude Code / tooling
+.agents/
+.claude/
+.playwright-mcp/

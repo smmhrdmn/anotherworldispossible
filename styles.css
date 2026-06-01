@@ -12,19 +12,56 @@ a, a *, a img, [href] {
 }
 
 ::selection {
-  background: #1a1a1a;
-  color: #fff;
+  background: var(--selection-bg);
+  color: var(--selection-text);
+}
+
+/* Registered as <color> so the gradient and text/accent colors crossfade
+   smoothly when the time/weather theme updates. Where @property is
+   unsupported the values simply snap instead of animating. */
+@property --bg-top { syntax: '<color>'; inherits: true; initial-value: #ffffff; }
+@property --bg-bottom { syntax: '<color>'; inherits: true; initial-value: #ffffff; }
+@property --text { syntax: '<color>'; inherits: true; initial-value: #1a1a1a; }
+@property --text-muted { syntax: '<color>'; inherits: true; initial-value: #767676; }
+@property --accent { syntax: '<color>'; inherits: true; initial-value: #2c5aa0; }
+@property --accent-hover { syntax: '<color>'; inherits: true; initial-value: #1e3f6f; }
+@property --accent-underline { syntax: '<color>'; inherits: true; initial-value: #9bb8dc; }
+@property --widget-link-text { syntax: '<color>'; inherits: true; initial-value: #2c5aa0; }
+
+:root {
+  --bg-top: #ffffff;
+  --bg-bottom: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #767676;
+  --accent: #2c5aa0;
+  --accent-hover: #1e3f6f;
+  --accent-underline: #9bb8dc;
+  --widget-bg: rgba(0, 0, 0, 0.04);
+  --widget-link-bg: rgba(44, 90, 160, 0.10);
+  --widget-link-bg-hover: rgba(44, 90, 160, 0.16);
+  --widget-link-text: #2c5aa0;
+  --pos: #1e6f3c;
+  --neg: #c0392b;
+  --selection-bg: #1a1a1a;
+  --selection-text: #ffffff;
 }
 
 html {
   font-size: 15px;
+  transition:
+    --bg-top 1200ms ease, --bg-bottom 1200ms ease,
+    --text 1200ms ease, --text-muted 1200ms ease,
+    --accent 1200ms ease, --accent-hover 1200ms ease,
+    --accent-underline 1200ms ease, --widget-link-text 1200ms ease;
 }
 
 body {
   font-family: 'Neue Haas Grotesk Display Pro', 'Neue Haas Grotesk Text Pro', 'Helvetica Neue', Helvetica, -apple-system, sans-serif;
   line-height: 1.6;
-  color: #1a1a1a;
-  background: #fff;
+  color: var(--text);
+  background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+  background-attachment: fixed;
+  min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -80,17 +117,17 @@ main > .other { animation-delay: 0.12s; }
 .other-item:nth-child(5) { animation-delay: 0.32s; }
 
 a {
-  color: #2c5aa0;
+  color: var(--accent);
   text-decoration: underline;
   text-decoration-style: dotted;
-  text-decoration-color: #9bb8dc;
+  text-decoration-color: var(--accent-underline);
   text-underline-offset: 2px;
   transition: text-decoration-color 0.15s, color 0.15s;
 }
 
 a:hover {
-  color: #1e3f6f;
-  text-decoration-color: #2c5aa0;
+  color: var(--accent-hover);
+  text-decoration-color: var(--accent);
 }
 
 a:active {
@@ -524,7 +561,7 @@ footer {
   line-height: 1.45;
   letter-spacing: -0.005em;
   margin: 0 0 2rem;
-  color: #1a1a1a;
+  color: var(--text);
 }
 
 .landing-text:last-of-type {
@@ -569,18 +606,18 @@ footer {
   display: inline-block;
   padding: 0.15em 0.4em;
   margin: 0;
-  background: rgba(0, 0, 0, 0.04);
   border-radius: 999px;
   white-space: nowrap;
   line-height: 1;
-  font-weight: 450;
+  font-weight: 400;
+  background: var(--widget-bg);
 }
 
 .widget-icon {
   width: 1em;
   height: 1em;
   margin-right: 0.25em;
-  color: #767676;
+  color: var(--text-muted);
   vertical-align: -0.15em;
 }
 
@@ -592,21 +629,21 @@ footer {
 }
 
 .widget--down {
-  color: #c0392b;
+  color: var(--neg);
   background: rgba(192, 57, 43, 0.08);
 }
 
 .widget--down .widget-icon {
-  color: #c0392b;
+  color: var(--neg);
 }
 
 .widget--up {
-  color: #1e6f3c;
+  color: var(--pos);
   background: rgba(30, 111, 60, 0.08);
 }
 
 .widget--up .widget-icon {
-  color: #1e6f3c;
+  color: var(--pos);
 }
 
 .nowrap {
@@ -614,15 +651,15 @@ footer {
 }
 
 .widget--link {
-  color: #2c5aa0;
-  background: rgba(44, 90, 160, 0.10);
+  color: var(--widget-link-text);
+  background: var(--widget-link-bg);
   text-decoration: none;
   transition: color 200ms ease, background-color 200ms ease;
 }
 
 .widget--link:hover {
-  color: #1e3f6f;
-  background: rgba(44, 90, 160, 0.16);
+  color: var(--accent-hover);
+  background: var(--widget-link-bg-hover);
   text-decoration: none;
 }
 

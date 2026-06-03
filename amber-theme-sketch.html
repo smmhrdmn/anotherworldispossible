@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amber theme — sketch</title>
+<style>
+  /* ----------------------------------------------------------------
+     Amber theme sketch for anotherworldispossible.xyz
+
+     "All amber" = lock the hue to one warm family and let LIGHTNESS do
+     all the work, so the monochrome look never costs you contrast.
+     Two grounds are offered:
+       .amber-field    — warm paper-amber ground, deep roasted-amber ink (light)
+       .amber-phosphor — near-black warm ground, glowing amber ink (dark CRT)
+     Every token below clears WCAG AA (>=4.5:1) for normal text; the
+     numbers in the badges are the measured min-contrast vs the gradient.
+     These map 1:1 onto the live --bg-top/--text/--accent vars in styles.css.
+  ---------------------------------------------------------------- */
+  :root.amber-field {
+    --bg-top:#f8dfbf; --bg-bottom:#f5cf9e;
+    --text:#4e2e04;            /* 8.3:1  */
+    --text-muted:#7c5118;      /* 4.7:1  */
+    --accent:#854b00;          /* 4.8:1  */
+    --accent-hover:#4d2b00;    /* 8.6:1  */
+    --accent-underline:#c79152;
+    --widget-bg:rgba(78,46,4,0.06);
+    --widget-link-bg:rgba(133,75,0,0.12);
+    --widget-link-bg-hover:rgba(133,75,0,0.18);
+    --pos:#6c5203;             /* 4.9:1  gold-amber  */
+    --neg:#a62a07;             /* 4.8:1  ember-amber */
+    --selection-bg:#4e2e04; --selection-text:#f8dfbf;
+  }
+  :root.amber-phosphor {
+    --bg-top:#1b160e; --bg-bottom:#2a2213;
+    --text:#f8c162;            /* 9.6:1  */
+    --text-muted:#c89741;      /* 6.0:1  */
+    --accent:#ffcb70;          /* 10.5:1 */
+    --accent-hover:#ffe3b3;    /* 12.6:1 */
+    --accent-underline:#7a5a24;
+    --widget-bg:rgba(248,193,98,0.10);
+    --widget-link-bg:rgba(255,203,112,0.16);
+    --widget-link-bg-hover:rgba(255,203,112,0.26);
+    --pos:#fbe556;             /* 12.3:1 gold  */
+    --neg:#f7733b;             /* 5.6:1  ember */
+    --selection-bg:#f8c162; --selection-text:#1b160e;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  ::selection { background:var(--selection-bg); color:var(--selection-text); }
+  html { font-size:15px; }
+  body {
+    font-family:'Neue Haas Grotesk Display Pro','Helvetica Neue',Helvetica,-apple-system,sans-serif;
+    line-height:1.6; color:var(--text);
+    background:linear-gradient(180deg,var(--bg-top),var(--bg-bottom));
+    background-attachment:fixed; min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    transition:color .6s ease, background .6s ease;
+  }
+  .wrap { max-width:760px; margin:0 auto; padding:48px 32px 80px; }
+
+  /* header bar like the screenshot */
+  .topbar { display:flex; justify-content:space-between; font-size:.72rem;
+    letter-spacing:.04em; color:var(--text-muted); margin-bottom:40px; }
+
+  .clock { font-size:3.4rem; font-weight:600; line-height:1; letter-spacing:-.01em; }
+  .date { font-style:italic; color:var(--text-muted); margin:6px 0 28px; }
+
+  /* the Today / Practice / Music list */
+  .list { display:grid; grid-template-columns:96px 1fr; row-gap:8px; column-gap:18px;
+    margin-bottom:36px; }
+  .list dt { font-weight:700; }
+  .list dd { font-style:italic; }
+  .list a { color:var(--accent); text-decoration:none;
+    text-underline-offset:3px; text-decoration-color:var(--accent-underline); }
+  .list a:hover { color:var(--accent-hover); text-decoration:underline; }
+  .sep { color:var(--text-muted); margin:0 6px; }
+
+  /* launcher pills */
+  .pills { display:flex; flex-wrap:wrap; gap:10px; margin:8px 0 28px; }
+  .pill { font-weight:600; font-size:.9rem; padding:8px 16px; border-radius:999px;
+    color:var(--accent); background:var(--widget-link-bg); cursor:pointer;
+    transition:background .2s ease, color .2s ease; }
+  .pill:hover { background:var(--widget-link-bg-hover); color:var(--accent-hover); }
+
+  /* command bar */
+  .cmd { display:flex; align-items:center; gap:12px; padding:14px 18px;
+    border-radius:14px; background:var(--widget-bg); }
+  .cmd input { flex:1; border:0; background:transparent; color:var(--text);
+    font:inherit; font-style:italic; outline:none; }
+  .cmd input::placeholder { color:var(--text-muted); font-style:italic; }
+  .cmd .arrow { color:var(--accent); }
+  .hint { font-size:.7rem; color:var(--text-muted); margin-top:10px; letter-spacing:.03em; }
+
+  .meta { margin-top:14px; font-size:.9rem; }
+  .up { color:var(--pos); } .down { color:var(--neg); }
+
+  /* contrast token table */
+  .swatches { margin-top:48px; border-top:1px solid var(--widget-link-bg); padding-top:24px; }
+  .swatches h3 { font-size:.8rem; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--text-muted); margin-bottom:14px; }
+  .tok { display:flex; align-items:center; gap:14px; font-size:.85rem; padding:5px 0; }
+  .chip { width:28px; height:28px; border-radius:7px; flex:none;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.12); }
+  .tok code { font-family:ui-monospace,Menlo,monospace; font-size:.78rem; }
+  .badge { margin-left:auto; font-size:.72rem; font-weight:700; padding:2px 9px;
+    border-radius:999px; background:var(--widget-link-bg); color:var(--accent); }
+
+  /* mode switch */
+  .switch { position:fixed; top:16px; right:16px; display:flex; gap:8px;
+    background:var(--widget-bg); padding:6px; border-radius:999px; }
+  .switch button { font:inherit; font-size:.78rem; font-weight:600; cursor:pointer;
+    border:0; padding:6px 14px; border-radius:999px; background:transparent;
+    color:var(--text-muted); }
+  .switch button[aria-pressed="true"] { background:var(--widget-link-bg); color:var(--accent); }
+</style>
+</head>
+<body>
+  <div class="switch">
+    <button id="b-field" aria-pressed="true">Warm field</button>
+    <button id="b-phos" aria-pressed="false">Phosphor</button>
+  </div>
+
+  <div class="wrap">
+    <div class="topbar"><span>home</span><span>amber</span><span>Tue Jun 2 · 21:45</span></div>
+
+    <div class="clock">21:45</div>
+    <div class="date">Tue, June 2</div>
+
+    <dl class="list">
+      <dt>Today</dt>    <dd>Tue, June 2</dd>
+      <dt>Practice</dt> <dd><a href="#">Meditation</a><span class="sep">·</span><a href="#">Breathwork</a><span class="sep">·</span><a href="#">Jhanas</a><span class="sep">·</span><a href="#">Pliability</a><span class="sep">·</span><a href="#">Olo</a></dd>
+      <dt>Music</dt>    <dd><a href="#">Lo-Fi</a><span class="sep">·</span><a href="#">Nils Frahm</a><span class="sep">·</span><a href="#">Spotify</a></dd>
+      <dt>Read</dt>     <dd><a href="#">Daily Pages</a><span class="sep">·</span><a href="#">Deep Alignment</a><span class="sep">·</span><a href="#">Manifesto</a></dd>
+      <dt>Apps</dt>     <dd><a href="#">Figma</a><span class="sep">·</span><a href="#">iA Writer</a><span class="sep">·</span><a href="#">Claude</a></dd>
+      <dt>Do</dt>       <dd><a href="#">Journal</a><span class="sep">·</span><a href="#">Start session</a><span class="sep">·</span><a href="#">Take a break</a><span class="sep">·</span><a href="#">Wind down</a></dd>
+    </dl>
+
+    <div class="meta">Markets <span class="up">▲ +1.2%</span> <span class="sep">·</span> Sleep debt <span class="down">▼ −0.5h</span></div>
+
+    <div class="pills" style="margin-top:24px">
+      <span class="pill">New Note</span><span class="pill">Spotify</span>
+      <span class="pill">iA Writer</span><span class="pill">Kindle</span><span class="pill">Audible</span>
+    </div>
+
+    <div class="cmd">
+      <input placeholder="Message, search or command …">
+      <span class="arrow">↑</span>
+    </div>
+    <div class="hint">tab for chat · hold right ⌘ for launchers · soft</div>
+
+    <div class="swatches">
+      <h3>Tokens &amp; measured contrast (vs gradient)</h3>
+      <div id="tokens"></div>
+    </div>
+  </div>
+
+<script>
+  // live contrast readout so the badges always reflect the actual vars
+  const lin=v=>{v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);};
+  const lum=c=>0.2126*lin(c[0])+0.7152*lin(c[1])+0.0722*lin(c[2]);
+  const ratio=(a,b)=>{const L1=lum(a),L2=lum(b),hi=Math.max(L1,L2),lo=Math.min(L1,L2);return (hi+0.05)/(lo+0.05);};
+  function rgb(s){const m=getComputedStyle(document.documentElement).getPropertyValue(s).trim();
+    const x=m.match(/\d+/g).map(Number);return [x[0],x[1],x[2]];}
+  const TOKENS=['--text','--text-muted','--accent','--accent-hover','--pos','--neg'];
+  function render(){
+    const top=rgb('--bg-top'), bot=rgb('--bg-bottom');
+    document.getElementById('tokens').innerHTML = TOKENS.map(t=>{
+      const c=rgb(t), r=Math.min(ratio(c,top),ratio(c,bot));
+      const css=getComputedStyle(document.documentElement).getPropertyValue(t).trim();
+      const ok=r>=4.5?'AA ✓':(r>=3?'AA-large':'FAIL');
+      return `<div class="tok"><span class="chip" style="background:${css}"></span>
+        <span>${t}</span><code>${css}</code>
+        <span class="badge">${r.toFixed(1)}:1 · ${ok}</span></div>`;
+    }).join('');
+  }
+  function set(mode){
+    document.documentElement.className = mode;
+    document.getElementById('b-field').setAttribute('aria-pressed', mode==='amber-field');
+    document.getElementById('b-phos').setAttribute('aria-pressed', mode==='amber-phosphor');
+    render();
+  }
+  document.getElementById('b-field').onclick=()=>set('amber-field');
+  document.getElementById('b-phos').onclick=()=>set('amber-phosphor');
+  set('amber-field');
+</script>
+</body>
+</html>

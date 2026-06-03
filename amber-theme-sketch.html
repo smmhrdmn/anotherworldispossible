@@ -17,7 +17,9 @@
      numbers in the badges are the measured min-contrast vs the gradient.
      These map 1:1 onto the live --bg-top/--text/--accent vars in styles.css.
   ---------------------------------------------------------------- */
-  :root.amber-field {
+  /* Default (no JS needed): warm-field amber lives on :root so the theme
+     renders even where scripts are blocked (e.g. mobile file previews). */
+  :root, :root.amber-field {
     --bg-top:#f8dfbf; --bg-bottom:#f5cf9e;
     --text:#4e2e04;            /* 8.3:1  */
     --text-muted:#7c5118;      /* 4.7:1  */

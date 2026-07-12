@@ -47,7 +47,7 @@ a, a *, a img, [href] {
 }
 
 html {
-  font-size: 14px;
+  font-size: 16px;
   transition:
     --bg-top 1200ms ease, --bg-bottom 1200ms ease,
     --text 1200ms ease, --text-muted 1200ms ease,

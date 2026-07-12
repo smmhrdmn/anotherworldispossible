@@ -774,6 +774,47 @@
         .catch(() => hideSentence('iss')), ['iss']);
 
       // On this day
+      //
+      // Cleans Wikipedia's "on this day" list-page text for mid-sentence use
+      // inside "On this day in YEAR, TEXT." Strips context prefixes
+      // ("American Civil War: ..."), image-reference parentheticals
+      // ("(pictured)"), lowercases a safe leading article, and removes the
+      // trailing period (the template already supplies one).
+      function cleanOtdText(text) {
+        if (!text) return text;
+        let s = text;
+
+        // Strip a leading context prefix like "American Civil War: The
+        // Battle of Gettysburg began". Guard against stripping time-like
+        // colons ("At 12:30, ...") by requiring the character before the
+        // colon to be a letter, and requiring the prefix to either contain a
+        // space or be a single capitalized word of at least 4 characters.
+        const prefixMatch = s.match(/^([A-Z][^:]{2,60}):\s+(?=[A-Za-z])/);
+        if (prefixMatch) {
+          const prefix = prefixMatch[1];
+          const charBeforeColon = prefix.charAt(prefix.length - 1);
+          const hasSpace = prefix.indexOf(' ') !== -1;
+          const isSingleCapitalizedWord = !hasSpace && /^[A-Z][A-Za-z]{3,}$/.test(prefix);
+          if (/[A-Za-z]/.test(charBeforeColon) && (hasSpace || isSingleCapitalizedWord)) {
+            s = s.slice(prefixMatch[0].length);
+          }
+        }
+
+        // Strip image-reference parentheticals like "(pictured)" / "(pictured, top)" / "(left, depicted)".
+        s = s
+          .replace(/\s*\([^)]*\b(?:pictured|depicted|shown|illustrated|image|photo)\b[^)]*\)/gi, '')
+          .replace(/\s{2,}/g, ' ');
+
+        // Lowercase a safe leading article: "The first..." -> "the first...",
+        // but keep "The Beatles..." capitalized since the next word is a proper noun.
+        s = s.replace(/^(The|A|An)(\s+)([a-z])/, (_, article, ws, letter) => article.toLowerCase() + ws + letter);
+
+        // Strip the trailing sentence period (the template already has one).
+        s = s.replace(/\.$/, '');
+
+        return s;
+      }
+
       const today = new Date();
       const mm = String(today.getMonth() + 1).padStart(2, '0');
       const dd = String(today.getDate()).padStart(2, '0');
@@ -782,18 +823,19 @@
         .then(data => {
           const events = (data.selected || []).filter(e => e.text && e.year && e.year > 0);
           if (!events.length) { hideSentence('otd'); return; }
-          const pick = events[Math.floor(Math.random() * events.length)];
+          const cleaned = events.map(e => ({ event: e, text: cleanOtdText(e.text) }));
+          // Prefer entries short enough to read well mid-sentence; if none
+          // qualify, fall back to the shortest entry available.
+          let candidates = cleaned.filter(c => c.text.length <= 120);
+          if (!candidates.length) {
+            const minLen = Math.min(...cleaned.map(c => c.text.length));
+            candidates = cleaned.filter(c => c.text.length === minLen);
+          }
+          const pick = candidates[Math.floor(Math.random() * candidates.length)];
           const yearEl = document.getElementById('land-otd-year');
           const textEl = document.getElementById('land-otd-text');
-          if (yearEl) yearEl.textContent = pick.year;
-          if (textEl) {
-            // Strip image-reference parentheticals like "(pictured)" / "(pictured, top)" / "(left, depicted)"
-            // and the trailing sentence period (template already has one).
-            textEl.textContent = pick.text
-              .replace(/\s*\([^)]*\b(?:pictured|depicted|shown|illustrated|image|photo)\b[^)]*\)/gi, '')
-              .replace(/\s{2,}/g, ' ')
-              .replace(/\.$/, '');
-          }
+          if (yearEl) yearEl.textContent = pick.event.year;
+          if (textEl) textEl.textContent = pick.text;
         })
         .catch(() => hideSentence('otd')), ['otd']);
 

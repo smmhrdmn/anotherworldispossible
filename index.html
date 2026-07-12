@@ -930,6 +930,33 @@
 
     })();
   </script>
+
+  <script type="module">
+    // Interaction sound cues (Cuelume, synthesized via Web Audio — no files).
+    // Delegated so runtime-generated pills (weather, Mets, ISS…) are covered
+    // without touching the widget() factory.
+    import { play } from 'https://esm.sh/cuelume';
+
+    // Hover cues only make sense (and only fire reliably) on real pointers.
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      let lastHovered = null;
+      document.addEventListener('mouseover', (e) => {
+        const link = e.target.closest('a');
+        const pill = link ? null : e.target.closest('.widget, .mta-bullet');
+        const hit = link || pill;
+        if (!hit || hit === lastHovered) return;
+        lastHovered = hit;
+        play(link ? 'tick' : 'whisper');
+      });
+      document.addEventListener('mouseout', (e) => {
+        if (lastHovered && !lastHovered.contains(e.relatedTarget)) lastHovered = null;
+      });
+    }
+
+    document.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('a')) play('press');
+    });
+  </script>
 </body>
 
 </html>

@@ -8,7 +8,7 @@ self-contained.
 | --- | --- | --- | --- |
 | 001 | [Graceful late-load](001-graceful-late-load.md) | HIGH | DONE |
 | 002 | [Reduced-motion inversion](002-reduced-motion-inversion.md) | MEDIUM | DONE |
-| 003 | [Cuelume sound cues](003-cuelume-sound-cues.md) | user-requested | TODO |
+| 003 | [Cuelume sound cues](003-cuelume-sound-cues.md) | user-requested | DONE |
 
 **Execution order**: 001 → 002 → 003.
 

@@ -1293,8 +1293,46 @@ footer {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * {
-    transition: none !important;
+  /* Drop movement and blur, keep brief opacity/color feedback. */
+  .page > *,
+  main > *,
+  .work-item,
+  .other-item,
+  .sidebar-info {
+    animation: fadeOnly 200ms ease-out forwards;
+    animation-delay: 0s;
+  }
+
+  .landing-sentence,
+  .landing-cta-link {
+    filter: none;
+  }
+
+  /* The late-load reflow mask (.landing-text.is-resettling) is movement —
+     drop it so a late sentence simply appears instead of blurring in. */
+  .landing-text {
+    transition: none;
+  }
+
+  .landing-sentence.is-loaded,
+  .landing-cta-link.is-loaded {
+    animation: fadeOnly 200ms ease-out forwards;
+    animation-delay: 0s;
+  }
+
+  /* Movement and long theme crossfades snap; short feedback remains. */
+  html {
+    transition: none;
+  }
+
+  .view-toggle-thumb,
+  .weather-popover,
+  .section-caret {
+    transition: none;
+  }
+
+  *:active {
+    transform: none !important;
   }
 }
 

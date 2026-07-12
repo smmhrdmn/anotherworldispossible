@@ -218,7 +218,7 @@ header h1 {
 header p {
   font-size: 1rem;
   color: #1a1a1a;
-  max-width: 56ch;
+  max-width: 50ch;
 }
 
 header p strong {
@@ -277,7 +277,7 @@ header p strong {
 .work-item p {
   font-size: 1rem;
   color: #1a1a1a;
-  max-width: 56ch;
+  max-width: 50ch;
 }
 
 .work-item .outcome {
@@ -751,7 +751,7 @@ footer {
   padding: 0 0.875rem;
   /* Translucent + blurred so the sky gradient shows through; border picks up
      the theme text color at low opacity for a subtle, adapting outline. */
-  background: color-mix(in srgb, var(--bg-bottom), transparent 30%);
+  background: color-mix(in srgb, var(--bg-bottom), transparent 55%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid color-mix(in srgb, var(--text), transparent 88%);
@@ -869,7 +869,7 @@ footer {
    =================== */
 
 .page--single {
-  max-width: 56ch;
+  max-width: 50ch;
   margin: 0 auto;
   padding: 4rem 24px 3rem;
   min-height: 100vh;
@@ -882,7 +882,7 @@ footer {
 }
 
 .page--single .intro p {
-  max-width: 56ch;
+  max-width: 50ch;
 }
 
 .page--single main {

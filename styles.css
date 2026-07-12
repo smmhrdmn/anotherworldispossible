@@ -622,7 +622,21 @@ footer {
 .landing-sentence.is-shown {
   filter: none;
   opacity: 1;
-  transition: opacity 600ms ease-out;
+  transition: opacity 450ms ease-out;
+}
+
+/* Reflow mask: a late sentence's insertion (or removal) shoves the rest of
+   the paragraph's text into new positions. Softening the whole paragraph for
+   one transition length while that reflow happens hides the shove — it reads
+   as a deliberate refocus instead of a jump. See handleLateResolution /
+   hideSentence in the script. */
+.landing-text.is-resettling {
+  filter: blur(2px);
+  opacity: 0.6;
+}
+
+.landing-text {
+  transition: filter 220ms ease-out, opacity 220ms ease-out;
 }
 
 /* Soft exit: hiding a sentence that's already on screen fades it out instead

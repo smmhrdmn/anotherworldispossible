@@ -58,10 +58,17 @@
         const isVisible = el.classList.contains('is-loaded') || el.classList.contains('is-shown');
         if (isVisible) {
           el.classList.add('is-hiding');
+          // Mask the paragraph for the same reason as handleLateResolution's
+          // late-success path: the display:none below reflows the paragraph,
+          // so it should land while the paragraph is softened, not sharp.
+          const p = el.closest('.landing-text');
+          const maskable = !!p && p.style.display !== 'none';
+          if (maskable) p.classList.add('is-resettling');
           setTimeout(() => {
             el.hidden = true;
             el.style.display = 'none';
             resettlePunctuation();
+            if (maskable) p.classList.remove('is-resettling');
           }, 300);
         } else {
           el.classList.remove('is-pending');
@@ -397,7 +404,7 @@
       // `names` lists the sentence(s) this fetch feeds, so we can tell whether
       // the real promise or the timeout won the race and keep `pending` (and
       // therefore the reveal / punctuation logic) in sync.
-      const PER_FETCH_TIMEOUT_MS = 1200;
+      const PER_FETCH_TIMEOUT_MS = 2000;
       const track = (p, names) => {
         names = names || [];
         names.forEach(n => pending.add(n));
@@ -423,17 +430,31 @@
       }
 
       function handleLateResolution(names) {
-        resettlePunctuation();
         names.forEach(name => {
           const el = document.querySelector('.landing-sentence[data-sentence="' + name + '"]');
           if (!el || el.hidden || el.style.display === 'none') return;
           if (el.classList.contains('is-loaded') || el.classList.contains('is-shown')) return;
-          el.classList.remove('is-pending');
-          // Force a layout flush so display:none -> inline commits as its own
-          // frame before the opacity transition kicks in below — otherwise the
-          // two changes coalesce into one recalc and the fade never plays.
-          void el.offsetWidth;
-          el.classList.add('is-shown');
+          // Mask the paragraph before the reflow so the text shove reads as a
+          // deliberate refocus instead of a shove. Nothing to mask if the whole
+          // paragraph is still display:none (every sentence in it pending).
+          const p = el.closest('.landing-text');
+          const maskable = !!p && p.style.display !== 'none';
+          const reveal = () => {
+            el.classList.remove('is-pending');
+            resettlePunctuation();
+            // Force a layout flush so display:none -> inline commits as its own
+            // frame before the opacity transition kicks in below — otherwise the
+            // two changes coalesce into one recalc and the fade never plays.
+            void el.offsetWidth;
+            el.classList.add('is-shown');
+            if (maskable) p.classList.remove('is-resettling');
+          };
+          if (maskable) {
+            p.classList.add('is-resettling');
+            setTimeout(reveal, 220); // matches .landing-text's mask transition
+          } else {
+            reveal();
+          }
         });
       }
 
@@ -905,7 +926,7 @@
       let postRan = false;
       const runPost = () => { if (postRan) return; postRan = true; postProcessLanding(); };
       Promise.allSettled(dataPromises).then(runPost);
-      setTimeout(runPost, 3000); // safety net — caps total wait
+      setTimeout(runPost, 3500); // safety net — caps total wait
 
     })();
   </script>

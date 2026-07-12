@@ -575,6 +575,17 @@ footer {
   filter: blur(8px);
 }
 
+/* Held back: a fetch that missed the reveal window doesn't just sit
+   invisible, it's removed from layout entirely so it doesn't leave a hole
+   in the paragraph (or leave an all-pending paragraph occupying vertical
+   space). Restored to `display: inline` right before its late fade-in (see
+   handleLateResolution in the script). Never blurred — the late path is a
+   plain opacity fade, so blur plays no part even while held back. */
+.landing-sentence.is-pending {
+  display: none;
+  filter: none;
+}
+
 .landing-sentence.is-loaded {
   animation: focusFade 1200ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
   animation-delay: calc(var(--i, 0) * 200ms);

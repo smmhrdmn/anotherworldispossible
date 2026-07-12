@@ -58,10 +58,10 @@
           setTimeout(() => {
             el.hidden = true;
             el.style.display = 'none';
-            fixTrailingPunctuation();
-            preventOrphanPunctuation();
+            resettlePunctuation();
           }, 300);
         } else {
+          el.classList.remove('is-pending');
           el.hidden = true;
           el.style.display = 'none';
         }
@@ -89,6 +89,12 @@
       capturePunctuationOriginals();
 
       function fixTrailingPunctuation() {
+        // Undo any widget/punctuation wrapping first — this function only
+        // produces correct results against the pristine DOM shape that
+        // capturePunctuationOriginals() snapshotted. Safe to call on its
+        // own (not just paired with preventOrphanPunctuation()), since it
+        // fully restores the un-wrapped shape itself.
+        unwrapNowrap();
         document.querySelectorAll('.landing-text').forEach(p => {
           // A sentence fed by a fetch that hasn't resolved yet isn't actually
           // visible even though it lacks [hidden] — it's just not revealed yet.
@@ -414,12 +420,16 @@
       }
 
       function handleLateResolution(names) {
-        fixTrailingPunctuation();
-        preventOrphanPunctuation();
+        resettlePunctuation();
         names.forEach(name => {
           const el = document.querySelector('.landing-sentence[data-sentence="' + name + '"]');
           if (!el || el.hidden || el.style.display === 'none') return;
           if (el.classList.contains('is-loaded') || el.classList.contains('is-shown')) return;
+          el.classList.remove('is-pending');
+          // Force a layout flush so display:none -> inline commits as its own
+          // frame before the opacity transition kicks in below — otherwise the
+          // two changes coalesce into one recalc and the fade never plays.
+          void el.offsetWidth;
           el.classList.add('is-shown');
         });
       }
@@ -787,10 +797,27 @@
         })
         .catch(() => hideSentence('otd')), ['otd']);
 
+      // Undoes preventOrphanPunctuation()'s wrapping: moves each wrapped
+      // widget (and the punctuation text node it captured) back out of its
+      // .nowrap span, then merges the punctuation text back into its
+      // neighbor. This is what makes the fixers idempotent — every
+      // resettlePunctuation() run starts from the same pristine DOM shape
+      // that capturePunctuationOriginals() snapshotted, no matter how many
+      // times (or in what order) the fixers have already run.
+      function unwrapNowrap() {
+        document.querySelectorAll('.landing-text .nowrap').forEach(wrapper => {
+          const parent = wrapper.parentNode;
+          if (!parent) return;
+          while (wrapper.firstChild) parent.insertBefore(wrapper.firstChild, wrapper);
+          parent.removeChild(wrapper);
+          parent.normalize(); // re-merge the punctuation text node with its neighbor
+        });
+      }
+
       // Keep widgets and adjacent punctuation on the same line so commas don't orphan after a wrap.
       function preventOrphanPunctuation() {
+        unwrapNowrap();
         document.querySelectorAll('.landing-text .widget, .landing-text .mta-bullet').forEach(w => {
-          if (w.parentNode && w.parentNode.classList && w.parentNode.classList.contains('nowrap')) return;
           const next = w.nextSibling;
           if (!next || next.nodeType !== Node.TEXT_NODE) return;
           const match = next.textContent.match(/^([,;.])/);
@@ -804,16 +831,28 @@
         });
       }
 
-      function postProcessLanding() {
+      // Both fixers are independently re-run-safe (each unwraps before it
+      // does anything else) — this just runs them as the pair they're
+      // always needed as. Called everywhere the visible-sentence set can
+      // change.
+      function resettlePunctuation() {
         fixTrailingPunctuation();
         preventOrphanPunctuation();
+      }
+
+      function postProcessLanding() {
+        resettlePunctuation();
         // One unified cascade: every element with --i fades in together, top to bottom.
         // Nothing is visible until all data has loaded and widgets are formatted,
         // so the cascade plays once, smoothly, identical every visit. Sentences
-        // still waiting on a slow fetch sit out the cascade — they fade in on
-        // their own (see handleLateResolution) once their data arrives.
+        // still waiting on a slow fetch sit out the cascade entirely (display:
+        // none, see .is-pending) — they fade in on their own (see
+        // handleLateResolution) once their data arrives.
         document.querySelectorAll('.landing-sentence, .landing-cta-link').forEach(el => {
-          if (el.dataset.sentence && pending.has(el.dataset.sentence)) return;
+          if (el.dataset.sentence && pending.has(el.dataset.sentence)) {
+            el.classList.add('is-pending');
+            return;
+          }
           el.classList.add('is-loaded');
         });
       }

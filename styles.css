@@ -218,7 +218,7 @@ header h1 {
 header p {
   font-size: 1rem;
   color: #1a1a1a;
-  max-width: 50ch;
+  max-width: 55ch;
 }
 
 header p strong {
@@ -277,7 +277,7 @@ header p strong {
 .work-item p {
   font-size: 1rem;
   color: #1a1a1a;
-  max-width: 50ch;
+  max-width: 55ch;
 }
 
 .work-item .outcome {
@@ -869,7 +869,7 @@ footer {
    =================== */
 
 .page--single {
-  max-width: 50ch;
+  max-width: 55ch;
   margin: 0 auto;
   padding: 4rem 24px 3rem;
   min-height: 100vh;
@@ -882,7 +882,7 @@ footer {
 }
 
 .page--single .intro p {
-  max-width: 50ch;
+  max-width: 55ch;
 }
 
 .page--single main {

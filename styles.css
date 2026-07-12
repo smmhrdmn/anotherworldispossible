@@ -603,6 +603,26 @@ footer {
   }
 }
 
+/* Late-arriving / failing sentences: a fetch that missed the reveal window
+   never joins the cascade with stale text. It stays hidden until its data
+   arrives, then fades in on its own — a plain opacity fade, no blur, no
+   stagger, since it's a straggler rather than part of the reveal cascade. */
+.landing-sentence.is-shown {
+  filter: none;
+  opacity: 1;
+  transition: opacity 600ms ease-out;
+}
+
+/* Soft exit: hiding a sentence that's already on screen fades it out instead
+   of popping straight to display:none. !important is needed because the
+   cascade animation's forwards fill otherwise keeps winning the opacity. */
+.landing-sentence.is-hiding {
+  animation: none;
+  filter: none;
+  opacity: 0 !important;
+  transition: opacity 300ms ease-out;
+}
+
 .widget {
   display: inline-block;
   padding: 0.15em 0.4em;

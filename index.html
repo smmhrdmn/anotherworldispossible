@@ -43,15 +43,73 @@
 
   <script>
     (function() {
+      // Sentence names whose real fetch is still in flight (lost the reveal-time
+      // race against PER_FETCH_TIMEOUT_MS). Populated/drained by track() below.
+      const pending = new Set();
+
       function hideSentence(name) {
         const el = document.querySelector('[data-sentence="' + name + '"]');
-        if (el) { el.hidden = true; el.style.display = 'none'; }
+        if (!el) return;
+        // A sentence that's already on screen (post-reveal, or a late straggler
+        // that already faded in) gets a soft exit instead of popping away.
+        const isVisible = el.classList.contains('is-loaded') || el.classList.contains('is-shown');
+        if (isVisible) {
+          el.classList.add('is-hiding');
+          setTimeout(() => {
+            el.hidden = true;
+            el.style.display = 'none';
+            fixTrailingPunctuation();
+            preventOrphanPunctuation();
+          }, 300);
+        } else {
+          el.hidden = true;
+          el.style.display = 'none';
+        }
       }
+
+      // fixTrailingPunctuation() mutates the last visible sentence's trailing
+      // comma into a period (and swaps in a paragraph-opening prefix on the new
+      // first sentence). Both mutations need to be undoable, since late-arriving
+      // or late-failing sentences can change which sentence is first/last after
+      // the initial reveal — so we snapshot the original text once, up front,
+      // and always restore-then-reapply on every run.
+      const originalTrailingText = new WeakMap();
+      const originalPrefixText = new WeakMap();
+      function capturePunctuationOriginals() {
+        document.querySelectorAll('.landing-sentence').forEach(el => {
+          const lastChild = el.lastChild;
+          if (lastChild && lastChild.nodeType === Node.TEXT_NODE) {
+            originalTrailingText.set(el, lastChild.textContent);
+          }
+        });
+        document.querySelectorAll('[data-prefix-when-first]').forEach(el => {
+          originalPrefixText.set(el, el.textContent);
+        });
+      }
+      capturePunctuationOriginals();
 
       function fixTrailingPunctuation() {
         document.querySelectorAll('.landing-text').forEach(p => {
-          const visible = [...p.querySelectorAll('.landing-sentence:not([hidden])')];
+          // A sentence fed by a fetch that hasn't resolved yet isn't actually
+          // visible even though it lacks [hidden] — it's just not revealed yet.
+          const visible = [...p.querySelectorAll('.landing-sentence:not([hidden])')]
+            .filter(el => !(el.dataset.sentence && pending.has(el.dataset.sentence)));
           if (!visible.length) { p.style.display = 'none'; return; }
+          p.style.display = '';
+
+          // Restore originals first so this is idempotent no matter how many
+          // times it re-runs, or in what order sentences resolve/fail.
+          visible.forEach(el => {
+            const original = originalTrailingText.get(el);
+            if (original != null && el.lastChild && el.lastChild.nodeType === Node.TEXT_NODE) {
+              el.lastChild.textContent = original;
+            }
+          });
+          p.querySelectorAll('[data-prefix-when-first]').forEach(el => {
+            const original = originalPrefixText.get(el);
+            if (original != null) el.textContent = original;
+          });
+
           const last = visible[visible.length - 1];
           const lastChild = last.lastChild;
           if (lastChild && lastChild.nodeType === Node.TEXT_NODE) {
@@ -327,8 +385,14 @@
       // Race each fetch against a timeout so one slow endpoint can't hold up
       // the whole cascade. Slow ones still update their content when they
       // arrive (or get hidden on failure) — they just don't block the reveal.
+      // `names` lists the sentence(s) this fetch feeds, so we can tell whether
+      // the real promise or the timeout won the race and keep `pending` (and
+      // therefore the reveal / punctuation logic) in sync.
       const PER_FETCH_TIMEOUT_MS = 1200;
-      const track = p => {
+      const track = (p, names) => {
+        names = names || [];
+        names.forEach(n => pending.add(n));
+        p.then(() => settleNames(names));
         const timed = Promise.race([
           p,
           new Promise(resolve => setTimeout(resolve, PER_FETCH_TIMEOUT_MS))
@@ -336,6 +400,29 @@
         dataPromises.push(timed);
         return p;
       };
+
+      // Called once a tracked fetch's real promise resolves (success or
+      // failure — both are already handled by the time this fires, since it's
+      // chained onto the fully-caught promise). If reveal already happened and
+      // any of these names were still pending, this is a straggler: re-run the
+      // punctuation fixers (the visible set just changed) and fade the
+      // sentence in if it wasn't hidden by its own fetch handler.
+      function settleNames(names) {
+        const wasPending = names.some(n => pending.has(n));
+        names.forEach(n => pending.delete(n));
+        if (wasPending && postRan) handleLateResolution(names);
+      }
+
+      function handleLateResolution(names) {
+        fixTrailingPunctuation();
+        preventOrphanPunctuation();
+        names.forEach(name => {
+          const el = document.querySelector('.landing-sentence[data-sentence="' + name + '"]');
+          if (!el || el.hidden || el.style.display === 'none') return;
+          if (el.classList.contains('is-loaded') || el.classList.contains('is-shown')) return;
+          el.classList.add('is-shown');
+        });
+      }
 
       // Weather + sunset: Open-Meteo
       track(fetch('https://api.open-meteo.com/v1/forecast?latitude=40.7128&longitude=-74.006&current=temperature_2m,weather_code&daily=sunrise,sunset&temperature_unit=fahrenheit&timezone=America/New_York')
@@ -368,7 +455,7 @@
           themeState.ssIso = sunsetIso;
           paintTheme();
         })
-        .catch(() => { hideSentence('weather'); hideSentence('sunset'); }));
+        .catch(() => { hideSentence('weather'); hideSentence('sunset'); }), ['weather', 'sunset']);
 
       // MTA: official JSON feed from camsys (the vendor MTA uses), filter to subway lines with active disruptions
       const MTA_VERBS_PLURAL = {
@@ -455,7 +542,7 @@
           joinNodes(bullets, ' ', ' and ').forEach(n => target.appendChild(n));
           target.appendChild(document.createTextNode(' ' + verb));
         })
-        .catch(() => hideSentence('mta')));
+        .catch(() => hideSentence('mta')), ['mta']);
 
       // Mets game today. Use the date in Eastern time, not UTC — in the evening
       // ET, toISOString() has already rolled over to tomorrow, which made the
@@ -513,7 +600,7 @@
             target.appendChild(widget(formatTime12(gameTime), { source: 'MLB Stats API' }));
           }
         })
-        .catch(() => hideSentence('mets')));
+        .catch(() => hideSentence('mets')), ['mets']);
 
       // Worker proxy for data sources without browser-friendly CORS.
       // Deploy cloudflare-worker-data-proxy.js, then set WORKER_BASE (no trailing slash).
@@ -563,7 +650,7 @@
             if (direction) wrap.classList.add('widget--' + direction);
           }
         })
-        .catch(() => hideSentence('snp')));
+        .catch(() => hideSentence('snp')), ['snp']);
 
       // #1 article from Wikipedia's weekly Top 25 Report — a human-curated list,
       // so it avoids the bot-inflated junk (e.g. ".xxx") that turns up in the raw
@@ -633,7 +720,7 @@
           a.target = '_blank';
           a.rel = 'noopener noreferrer';
         })
-        .catch(() => hideSentence('trends')));
+        .catch(() => hideSentence('trends')), ['trends']);
 
       // ISS location → reverse geocode
       track(fetch('https://api.wheretheiss.at/v1/satellites/25544')
@@ -674,7 +761,7 @@
           if (prefix) el.appendChild(document.createTextNode(prefix));
           el.appendChild(widget(label, { source: 'wheretheiss.at + BigDataCloud' }));
         })
-        .catch(() => hideSentence('iss')));
+        .catch(() => hideSentence('iss')), ['iss']);
 
       // On this day
       const today = new Date();
@@ -698,7 +785,7 @@
               .replace(/\.$/, '');
           }
         })
-        .catch(() => hideSentence('otd')));
+        .catch(() => hideSentence('otd')), ['otd']);
 
       // Keep widgets and adjacent punctuation on the same line so commas don't orphan after a wrap.
       function preventOrphanPunctuation() {
@@ -722,8 +809,11 @@
         preventOrphanPunctuation();
         // One unified cascade: every element with --i fades in together, top to bottom.
         // Nothing is visible until all data has loaded and widgets are formatted,
-        // so the cascade plays once, smoothly, identical every visit.
+        // so the cascade plays once, smoothly, identical every visit. Sentences
+        // still waiting on a slow fetch sit out the cascade — they fade in on
+        // their own (see handleLateResolution) once their data arrives.
         document.querySelectorAll('.landing-sentence, .landing-cta-link').forEach(el => {
+          if (el.dataset.sentence && pending.has(el.dataset.sentence)) return;
           el.classList.add('is-loaded');
         });
       }

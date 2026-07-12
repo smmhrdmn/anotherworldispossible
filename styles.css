@@ -56,13 +56,14 @@ html {
 }
 
 body {
-  font-family: 'Neue Haas Grotesk Display Pro', 'Neue Haas Grotesk Text Pro', 'Helvetica Neue', Helvetica, -apple-system, sans-serif;
+  font-family: 'Atkinson Hyperlegible Next', 'Helvetica Neue', Helvetica, -apple-system, sans-serif;
   line-height: 1.6;
   color: var(--text);
   background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
   background-attachment: fixed;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  font-synthesis: none;
 }
 
 /* Page load animation */
@@ -642,6 +643,8 @@ footer {
   white-space: nowrap;
   line-height: 1;
   font-weight: 400;
+  font-family: 'Atkinson Hyperlegible Mono', monospace;
+  font-size: 0.95em;
   background: var(--widget-bg);
 }
 

@@ -643,7 +643,7 @@ footer {
   white-space: nowrap;
   line-height: 1;
   font-weight: 400;
-  font-family: 'Atkinson Hyperlegible Mono', monospace;
+  font-variant-numeric: tabular-nums;
   background: var(--widget-bg);
 }
 

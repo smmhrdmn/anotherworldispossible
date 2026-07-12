@@ -559,7 +559,7 @@ footer {
 
 
 .landing-text {
-  font-size: 1.3rem;
+  font-size: 1rem;
   line-height: 1.45;
   letter-spacing: -0.005em;
   margin: 0 0 2rem;
@@ -644,7 +644,6 @@ footer {
   line-height: 1;
   font-weight: 400;
   font-family: 'Atkinson Hyperlegible Mono', monospace;
-  font-size: 13px;
   background: var(--widget-bg);
 }
 

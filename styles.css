@@ -40,8 +40,6 @@ a, a *, a img, [href] {
   --widget-link-bg: rgba(44, 90, 160, 0.10);
   --widget-link-bg-hover: rgba(44, 90, 160, 0.16);
   --widget-link-text: #2c5aa0;
-  --pos: #1e6f3c;
-  --neg: #c0392b;
   --selection-bg: #1a1a1a;
   --selection-text: #ffffff;
 }
@@ -649,6 +647,9 @@ footer {
   transition: opacity 300ms ease-out;
 }
 
+/* Inline data pills have exactly two states: unlinked (neutral, .widget) and
+   linked (accent, .widget--link). No per-source colors — a pill's tint means
+   "you can click this", nothing else. */
 .widget {
   display: inline-block;
   padding: 0.15em 0.4em;
@@ -676,24 +677,6 @@ footer {
   vertical-align: 0.1em;
 }
 
-.widget--down {
-  color: var(--neg);
-  background: rgba(192, 57, 43, 0.08);
-}
-
-.widget--down .widget-icon {
-  color: var(--neg);
-}
-
-.widget--up {
-  color: var(--pos);
-  background: rgba(30, 111, 60, 0.08);
-}
-
-.widget--up .widget-icon {
-  color: var(--pos);
-}
-
 .nowrap {
   white-space: nowrap;
 }
@@ -709,32 +692,6 @@ footer {
   color: var(--accent-hover);
   background: var(--widget-link-bg-hover);
   text-decoration: none;
-}
-
-.mta-bullet {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.5em;
-  height: 1.5em;
-  margin: -0.25em 0.0625rem;
-  border-radius: 999px;
-  font-size: 0.85em;
-  font-weight: 600;
-  font-family: 'Helvetica Neue', Helvetica, sans-serif;
-  line-height: 1;
-  color: #fff;
-  vertical-align: middle;
-}
-
-.mta-bullet--L { background: #A7A9AC; }
-.mta-bullet--F { background: #FF6319; }
-
-.team-logo {
-  height: 1em;
-  width: auto;
-  margin-right: 0.25em;
-  vertical-align: -0.15em;
 }
 
 .landing-cta {

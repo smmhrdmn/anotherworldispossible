@@ -662,14 +662,6 @@ footer {
   background: var(--widget-bg);
 }
 
-.widget-icon {
-  width: 1em;
-  height: 1em;
-  margin-right: 0.25em;
-  color: var(--text-muted);
-  vertical-align: -0.15em;
-}
-
 .widget-aside {
   font-size: 0.8em;
   color: color-mix(in srgb, currentColor 75%, transparent);

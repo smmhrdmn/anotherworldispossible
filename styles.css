@@ -556,6 +556,22 @@ footer {
 }
 
 
+.landing-name {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  margin: 0 0 1rem;
+  color: var(--text);
+  opacity: 0;
+  filter: blur(8px);
+}
+
+.landing-name.is-loaded {
+  animation: focusFade 1200ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 200ms);
+}
+
 .landing-text {
   font-size: 1rem;
   line-height: 1.45;
@@ -603,11 +619,13 @@ footer {
 
 /* Mobile: drop blur (expensive on mobile GPUs) and tighten cascade */
 @media (max-width: 1023px) {
-  .landing-sentence {
+  .landing-sentence,
+  .landing-name {
     filter: none;
   }
 
-  .landing-sentence.is-loaded {
+  .landing-sentence.is-loaded,
+  .landing-name.is-loaded {
     animation: fadeOnly 750ms ease-out forwards;
     animation-delay: calc(var(--i, 0) * 150ms);
   }
@@ -1204,6 +1222,10 @@ footer {
   }
 
   /* Landing mobile tuning */
+  .landing-name {
+    margin-bottom: 0.75rem;
+  }
+
   .landing-text {
     font-size: 1rem;
     line-height: 1.45;
@@ -1253,6 +1275,7 @@ footer {
   }
 
   .landing-sentence,
+  .landing-name,
   .landing-cta-link {
     filter: none;
   }
@@ -1264,6 +1287,7 @@ footer {
   }
 
   .landing-sentence.is-loaded,
+  .landing-name.is-loaded,
   .landing-cta-link.is-loaded {
     animation: fadeOnly 200ms ease-out forwards;
     animation-delay: 0s;

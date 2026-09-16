@@ -19,29 +19,31 @@ a, a *, a img, [href] {
 /* Registered as <color> so the gradient and text/accent colors crossfade
    smoothly when the time/weather theme updates. Where @property is
    unsupported the values simply snap instead of animating. */
-@property --bg-top { syntax: '<color>'; inherits: true; initial-value: #ffffff; }
-@property --bg-bottom { syntax: '<color>'; inherits: true; initial-value: #ffffff; }
-@property --text { syntax: '<color>'; inherits: true; initial-value: #1a1a1a; }
-@property --text-muted { syntax: '<color>'; inherits: true; initial-value: #767676; }
-@property --accent { syntax: '<color>'; inherits: true; initial-value: #2c5aa0; }
-@property --accent-hover { syntax: '<color>'; inherits: true; initial-value: #1e3f6f; }
-@property --accent-underline { syntax: '<color>'; inherits: true; initial-value: #9bb8dc; }
-@property --widget-link-text { syntax: '<color>'; inherits: true; initial-value: #2c5aa0; }
+@property --bg-top { syntax: '<color>'; inherits: true; initial-value: #f8dfbf; }
+@property --bg-bottom { syntax: '<color>'; inherits: true; initial-value: #f5cf9e; }
+@property --text { syntax: '<color>'; inherits: true; initial-value: #4e2e04; }
+@property --text-muted { syntax: '<color>'; inherits: true; initial-value: #7c5118; }
+@property --accent { syntax: '<color>'; inherits: true; initial-value: #854b00; }
+@property --accent-hover { syntax: '<color>'; inherits: true; initial-value: #4d2b00; }
+@property --accent-underline { syntax: '<color>'; inherits: true; initial-value: #c79152; }
+@property --widget-link-text { syntax: '<color>'; inherits: true; initial-value: #854b00; }
 
+/* Amber warm-field defaults: the pre-JS first paint is already amber, so the
+   dynamic engine crossfades from amber → amber instead of flashing blue. */
 :root {
-  --bg-top: #ffffff;
-  --bg-bottom: #ffffff;
-  --text: #1a1a1a;
-  --text-muted: #767676;
-  --accent: #2c5aa0;
-  --accent-hover: #1e3f6f;
-  --accent-underline: #9bb8dc;
-  --widget-bg: rgba(0, 0, 0, 0.04);
-  --widget-link-bg: rgba(44, 90, 160, 0.10);
-  --widget-link-bg-hover: rgba(44, 90, 160, 0.16);
-  --widget-link-text: #2c5aa0;
-  --selection-bg: #1a1a1a;
-  --selection-text: #ffffff;
+  --bg-top: #f8dfbf;
+  --bg-bottom: #f5cf9e;
+  --text: #4e2e04;
+  --text-muted: #7c5118;
+  --accent: #854b00;
+  --accent-hover: #4d2b00;
+  --accent-underline: #c79152;
+  --widget-bg: rgba(78, 46, 4, 0.06);
+  --widget-link-bg: rgba(133, 75, 0, 0.12);
+  --widget-link-bg-hover: rgba(133, 75, 0, 0.18);
+  --widget-link-text: #854b00;
+  --selection-bg: #4e2e04;
+  --selection-text: #f8dfbf;
 }
 
 html {

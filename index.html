@@ -210,7 +210,9 @@
       // the colored accents have contrast headroom: dark skies go genuinely
       // dark, light skies stay genuinely light. Without this, mid-luminance
       // skies (e.g. snow at night) leave no room for an AA-compliant accent.
-      const DARK_CEIL = 0.11, LIGHT_FLOOR = 0.22;
+      // Tuned for the amber ink (#4e2e04) / amber glow (#f8c162) text: floors/
+      // ceilings that guarantee those two shades clear AA at the stop extreme.
+      const DARK_CEIL = 0.085, LIGHT_FLOOR = 0.34;
       function constrainStop(c, isDark) {
         let x = c; const toward = isDark ? [0, 0, 0] : [255, 255, 255];
         for (let i = 0; i < 24; i++) {
@@ -243,16 +245,20 @@
       // sunrise (sr) and sunset (ss). Interpolated in RGB between stops.
       function skyAt(hour, sr, ss) {
         sr = sr || 6.0; ss = ss || 19.5;
-        const N = [18, 20, 42], Nb = [32, 30, 60]; // deep night
+        // Monochrome amber: every stop sits on one warm hue, so the site is
+        // "all amber" yet still alive — it moves through LIGHTNESS across the
+        // day (deep phosphor night → pale warm-field midday → deep golden dusk)
+        // instead of through hue. Contrast is held by constrainStop + AA below.
+        const N = [27, 22, 14], Nb = [42, 34, 19]; // deep night (phosphor ground)
         const stops = [
           [0.0, N, Nb],
-          [sr - 1.2, [40, 42, 78], [86, 70, 104]],          // pre-dawn
-          [sr, [196, 208, 234], [255, 220, 192]],           // sunrise: pale blue → peach
-          [sr + 1.6, [220, 232, 248], [248, 250, 252]],     // morning
-          [(sr + ss) / 2, [216, 236, 252], [255, 255, 255]],// midday: sky blue → white
-          [ss - 1.6, [238, 238, 250], [255, 242, 214]],     // late afternoon → warm cream
-          [ss, [255, 210, 162], [250, 172, 150]],           // golden hour: amber → coral
-          [ss + 0.8, [112, 86, 150], [206, 120, 132]],      // dusk: violet → rose
+          [sr - 1.2, [50, 38, 22], [92, 64, 34]],           // pre-dawn: warming embers
+          [sr, [206, 142, 80], [236, 176, 116]],            // sunrise: rich amber
+          [sr + 1.6, [242, 212, 168], [249, 226, 192]],     // morning: pale amber
+          [(sr + ss) / 2, [248, 223, 191], [245, 207, 158]],// midday: warm field (palest)
+          [ss - 1.6, [247, 216, 172], [248, 208, 152]],     // late afternoon: warm cream
+          [ss, [222, 142, 66], [234, 166, 96]],             // golden hour: saturated amber
+          [ss + 0.8, [120, 74, 30], [150, 88, 42]],         // dusk: deep amber-brown
           [ss + 1.8, N, Nb],                                // night
           [24.0, N, Nb]
         ];
@@ -264,12 +270,6 @@
           }
         }
         return { top: N, bottom: Nb };
-      }
-
-      // Warmth peaks near sunrise/sunset (golden-hour accents), 0 midday/night.
-      function warmthAt(hour, sr, ss) {
-        sr = sr || 6.0; ss = ss || 19.5;
-        return clamp01(1 - Math.min(Math.abs(hour - sr), Math.abs(hour - ss)) / 2.0);
       }
 
       function weatherCategory(code) {
@@ -287,12 +287,14 @@
       function applyWeather(color, cat) {
         const avg = (color[0] + color[1] + color[2]) / 3;
         const gray = [avg, avg, avg];
+        // Weather still bends the mood, but every tint stays inside the amber
+        // family (warm greys/browns) so it never drifts blue or neutral.
         let desat = 0, dark = 1, toward = null, amt = 0;
-        if (cat === 'cloud') { desat = 0.45; dark = 0.93; }
-        else if (cat === 'fog') { desat = 0.7; dark = 0.92; toward = [200, 202, 206]; amt = 0.25; }
-        else if (cat === 'rain') { desat = 0.55; dark = 0.8; toward = [90, 110, 150]; amt = 0.22; }
-        else if (cat === 'snow') { desat = 0.6; dark = 1.0; toward = [232, 238, 248]; amt = 0.35; }
-        else if (cat === 'storm') { desat = 0.6; dark = 0.6; toward = [70, 80, 110]; amt = 0.25; }
+        if (cat === 'cloud') { desat = 0.35; dark = 0.94; }
+        else if (cat === 'fog') { desat = 0.5; dark = 0.93; toward = [210, 196, 170]; amt = 0.22; }
+        else if (cat === 'rain') { desat = 0.42; dark = 0.82; toward = [150, 120, 80]; amt = 0.20; }
+        else if (cat === 'snow') { desat = 0.45; dark = 1.0; toward = [240, 228, 200]; amt = 0.30; }
+        else if (cat === 'storm') { desat = 0.5; dark = 0.66; toward = [120, 92, 54]; amt = 0.24; }
         let c = lerpRGB(color, gray, desat);
         c = [c[0] * dark, c[1] * dark, c[2] * dark];
         if (toward) c = lerpRGB(c, toward, amt);
@@ -313,7 +315,9 @@
         // gradient toward black/white until BOTH stops clear AA with that text.
         // (A gradient spanning mid-luminance can't be read with one text color,
         // so we compress its range rather than let contrast fail.)
-        const darkText = [22, 22, 26], lightText = [244, 244, 250];
+        // Amber ink on light grounds, amber glow on dark grounds — the text
+        // itself carries the hue, so even the type reads as part of the amber.
+        const darkText = [78, 46, 4], lightText = [248, 193, 98];
         const avgLum0 = relLum([(top[0] + bottom[0]) / 2, (top[1] + bottom[1]) / 2, (top[2] + bottom[2]) / 2]);
         const isDark = avgLum0 < 0.4;
         const text = isDark ? lightText : darkText;
@@ -329,10 +333,9 @@
         // Muted text dims toward the sky but never drops below AA.
         let textMuted = pushToContrast(lerpRGB(text, bgAvg, 0.4), stops, fgToward, AA);
 
-        // Accent keeps its warm/cool hue but is pushed to AA against the sky.
-        const warmth = warmthAt(hour, sr, ss);
-        let accent = lerpRGB([44, 90, 160], [184, 104, 46], warmth); // cool blue → warm terracotta
-        accent = pushToContrast(accent, stops, fgToward, AA_ACCENT);
+        // Accent is amber too — a deep burnt amber on light grounds, a bright
+        // amber on dark — then pushed to AA against the sky like everything else.
+        let accent = pushToContrast(isDark ? [255, 203, 112] : [133, 75, 0], stops, fgToward, AA_ACCENT);
         const accentHover = lerpRGB(accent, isDark ? [255, 255, 255] : [0, 0, 0], 0.22);
         const accentUnderline = lerpRGB(accent, bgAvg, 0.5);
 

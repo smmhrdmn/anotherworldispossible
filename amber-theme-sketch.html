@@ -162,8 +162,14 @@
   const lin=v=>{v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);};
   const lum=c=>0.2126*lin(c[0])+0.7152*lin(c[1])+0.0722*lin(c[2]);
   const ratio=(a,b)=>{const L1=lum(a),L2=lum(b),hi=Math.max(L1,L2),lo=Math.min(L1,L2);return (hi+0.05)/(lo+0.05);};
-  function rgb(s){const m=getComputedStyle(document.documentElement).getPropertyValue(s).trim();
-    const x=m.match(/\d+/g).map(Number);return [x[0],x[1],x[2]];}
+  function rgb(s){
+    // Custom props hold hex strings; resolve any CSS color to rgb via a probe.
+    const raw=getComputedStyle(document.documentElement).getPropertyValue(s).trim();
+    const probe=document.createElement('span');
+    probe.style.color=raw; document.body.appendChild(probe);
+    const out=getComputedStyle(probe).color.match(/\d+/g).map(Number).slice(0,3);
+    probe.remove(); return out;
+  }
   const TOKENS=['--text','--text-muted','--accent','--accent-hover','--pos','--neg'];
   function render(){
     const top=rgb('--bg-top'), bot=rgb('--bg-bottom');

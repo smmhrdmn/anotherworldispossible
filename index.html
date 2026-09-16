@@ -10,7 +10,7 @@
   <meta property="og:description" content="Designer and researcher building accessible interfaces for emerging technologies. Currently designing trading tools for energy markets at ElectronX. Previously led design at Radiant Commons shipping privacy-preserving tools for Penumbra.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://www.anotherworldispossible.xyz/pix/SHSP.png">
-  <link rel="icon" href="pix/AWIP-Favicon.png">
+  <link rel="icon" href="/pix/AWIP-Favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&display=swap">
@@ -18,6 +18,12 @@
 </head>
 
 <body>
+  <a class="skip-link" href="#landing">Skip the canvas — read this page as text</a>
+
+  <!-- Canvas mount. Stays empty (and tldraw stays undownloaded) unless the
+       device is capable and the visitor is in Board mode. See src/main.tsx. -->
+  <div id="canvas-root" aria-hidden="true"></div>
+
   <div class="page page--single view--landing">
     <header class="intro">
       <div class="intro-header">
@@ -31,7 +37,7 @@
       <p class="intro-bio">Designer and researcher building accessible interfaces for emerging technologies. Currently designing trading tools for energy markets at <a href="https://www.electronx.com/">ElectronX</a>. Previously led design at Radiant Commons shipping privacy-preserving tools for <a href="https://github.com/penumbra-zone">Penumbra</a>. Hacking on <a href="https://mythril.cc/">Mythril</a> in my free time.</p>
     </header>
 
-    <section class="landing">
+    <section class="landing" id="landing">
       <h1 class="landing-name" style="--i:0">Sam Hardman</h1>
       <p class="landing-text"><span class="landing-sentence" style="--i:1">I’m a designer based in NYC </span><span class="landing-sentence" style="--i:2">with extensive experience leading product development in early-stage startups. </span><span class="landing-sentence" style="--i:3">Currently, I design trading tools for energy markets at <a class="widget widget--link" href="https://www.electronx.com/">ElectronX</a>. </span><span class="landing-sentence" style="--i:4">Lately, I’ve been reading <em>The Rifles</em> and <em>The Fort Bragg Cartel</em>.</span></p>
       <p class="landing-text"><span class="landing-sentence" data-sentence="weather" style="--i:5">Outside, it’s <span class="widget" data-source="Open-Meteo"><span id="land-weather">68°F and partly cloudy</span></span>, </span><span class="landing-sentence" data-sentence="sunset" style="--i:6">the sun <span id="land-sunset-verb">sets</span> at <span class="widget" data-source="Open-Meteo"><span id="land-sunset">7:42 PM</span></span>, </span><span class="landing-sentence" data-sentence="mta" style="--i:7"><span id="land-mta">the subway is running normally</span>, </span><span class="landing-sentence" data-sentence="mets" style="--i:8">and <span id="land-mets">the <span class="widget" data-source="MLB Stats API">Mets <span class="widget-aside">(14&#8209;12)</span></span> host the <span class="widget" data-source="MLB Stats API">Phillies <span class="widget-aside">(14&#8209;12)</span></span> tonight at <span class="widget" data-source="MLB Stats API">7:05 PM</span></span>.</span></p>
@@ -906,7 +912,10 @@
     // Interaction sound cues (Cuelume, synthesized via Web Audio — no files).
     // Delegated so runtime-generated pills (weather, Mets, ISS…) are covered
     // without touching the widget() factory.
-    import { play } from 'https://esm.sh/cuelume';
+    // Bundled rather than fetched from esm.sh: this script is hoisted into the
+    // entry chunk at build time, so a CDN failure here would take the whole
+    // entry — including the canvas bootstrap — down with it.
+    import { play } from 'cuelume';
 
     // Hover cues only make sense (and only fire reliably) on real pointers.
     if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
@@ -928,6 +937,8 @@
       if (e.target.closest('a')) play('press');
     });
   </script>
+
+  <script type="module" src="/src/main.ts"></script>
 </body>
 
 </html>

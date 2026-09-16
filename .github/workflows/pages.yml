@@ -1,0 +1,61 @@
+name: Deploy to GitHub Pages
+
+# NOTE: this workflow does nothing until Settings → Pages → Source is switched
+# from "Deploy from a branch" to "GitHub Actions". Until then the build goes
+# green here while the live site keeps serving the old branch.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
+
+      - run: npm run build
+        env:
+          VITE_TLDRAW_LICENSE_KEY: ${{ vars.TLDRAW_LICENSE_KEY }}
+
+      # The custom domain lives in public/CNAME. If it ever stops being copied
+      # into dist/, Pages silently drops anotherworldispossible.xyz — so fail
+      # the build loudly instead of finding out via DNS.
+      - name: Verify CNAME survived the build
+        run: |
+          test -f dist/CNAME || { echo "::error::dist/CNAME missing — custom domain would be lost"; exit 1; }
+          echo "CNAME: $(cat dist/CNAME)"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

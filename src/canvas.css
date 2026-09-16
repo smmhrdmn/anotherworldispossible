@@ -1,0 +1,108 @@
+/* Canvas overlay + the Board/Read control.
+   Everything here is scoped so the hand-written page is untouched when the
+   canvas is not mounted. */
+
+#canvas-root:empty { display: none; }
+
+.canvas-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+}
+
+/* Board mode hides the document rather than stacking on top of it; the
+   Read toggle and the skip link both bring it straight back. */
+html.canvas-active body > .page { display: none; }
+html.canvas-active, html.canvas-active body { overflow: hidden; }
+
+.canvas-loading {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  z-index: 10;
+}
+
+/* --- Board / Read control ---------------------------------------------- */
+
+/* Top-centre is the one edge tldraw leaves free: its toolbar is bottom-centre,
+   the style panel top-right, zoom bottom-left and the menu top-left. */
+.canvas-switch {
+  position: fixed;
+  z-index: 20;
+  top: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* In Read mode there is no tldraw chrome to avoid, so sit out of the way of
+   the text column instead. */
+html:not(.canvas-active) .canvas-switch {
+  top: auto;
+  bottom: 1rem;
+}
+
+/* .view-toggle in styles.css predates the token system and hardcodes its
+   colors, so it cannot follow the sky. Remap onto the live tokens. */
+.canvas-switch.view-toggle {
+  background: color-mix(in srgb, var(--bg-top) 82%, transparent);
+  backdrop-filter: blur(48px) saturate(180%);
+  -webkit-backdrop-filter: blur(48px) saturate(180%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.canvas-switch .view-toggle-thumb { background: var(--widget-bg); }
+.canvas-switch button { color: var(--text-muted); }
+.canvas-switch button[aria-pressed="true"] { color: var(--text); }
+.canvas-switch button:not([aria-pressed="true"]):hover { color: var(--text); }
+
+@media (prefers-reduced-motion: reduce) {
+  .canvas-switch .view-toggle-thumb { transition: none; }
+}
+
+/* --- tldraw theme bridge ------------------------------------------------
+   tldraw's chrome is entirely CSS-custom-property driven, and this site's
+   tokens are @property-registered <color>s with a 1200ms transition on
+   <html>. Pointing one at the other means the toolbar crossfades with the
+   sky for free — no JS bridge, no second source of truth. */
+
+.tl-container {
+  --tl-color-background: transparent;
+  --tl-color-text: var(--text);
+  --tl-color-text-1: var(--text);
+  --tl-color-text-3: var(--text-muted);
+  --tl-color-panel: color-mix(in srgb, var(--bg-top) 86%, transparent);
+  --tl-color-low: var(--widget-bg);
+  --tl-color-selected: var(--accent);
+  --tl-color-focus: var(--accent);
+  --tl-color-grid: var(--text-muted);
+  --tl-color-divider: color-mix(in srgb, var(--text) 12%, transparent);
+  font-family: 'Atkinson Hyperlegible Next', 'Helvetica Neue', Helvetica, -apple-system, sans-serif;
+}
+
+/* Let the body's sky gradient show through the canvas. */
+.tl-background, .tl-canvas { background: transparent !important; }
+
+.canvas-error {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-content: center;
+  gap: 0.75rem;
+  justify-items: center;
+  color: var(--text);
+  text-align: center;
+}
+
+.canvas-error button {
+  font: inherit;
+  color: var(--accent);
+  background: var(--widget-link-bg);
+  border: 0;
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  cursor: pointer;
+}

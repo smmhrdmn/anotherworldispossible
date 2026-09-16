@@ -16,3 +16,7 @@ theme-lab.js
 .playwright-mcp/
 .superpowers/
 skills-lock.json
+node_modules/
+dist/
+.wrangler/
+stats.html

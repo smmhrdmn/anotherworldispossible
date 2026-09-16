@@ -8,11 +8,11 @@
 
 ## Problem
 
-The site is a single hand-written `index.html` (962 lines, markup + an ~890-line IIFE) and
-`styles.css` (1447 lines), served raw by GitHub Pages from `main`. Its signature is a page of
+The site is a single hand-written `index.html` (933 lines, markup + an ~870-line IIFE) and
+`styles.css` (1420 lines), served raw by GitHub Pages from `main`. Its signature is a page of
 live-data sentences — weather, sunset, MTA, Mets, S&P, Wikipedia's most-read, the ISS, on-this-day
 — under a palette that `computeTheme()` recomputes from NYC sun position and weather code,
-enforcing WCAG AA contrast and crossfading over 1200ms (`index.html:313-405`).
+enforcing WCAG AA contrast and crossfading over 1200ms (`index.html:305-390`).
 
 The goal is to make it a FigJam-like space: **each week is a world.** The homepage becomes an
 infinite tldraw canvas, seeded with that week's live data as shapes. Visitors see each other's
@@ -78,17 +78,21 @@ documentation and docstrings say — see "Corrections" below.
 
 ### Corrections to the repo's own CSS
 
-`.work-item` (styles.css:229-293) is **not** a grid — it is a stacked list (`margin-bottom: 3rem`).
+`.work-item` (styles.css:96-160) is **not** a grid — it is a stacked list (`margin-bottom: 3rem`).
 The real reusable infrastructure is:
 
-- **`.page--single .grid` / `.card`** (styles.css:1055-1198) — a responsive grid with `view-grid` /
+- **`.page--single .grid` / `.card`** (styles.css:1022+) — a responsive grid with `view-grid` /
   `view-column` / `view-list` variants, a three-column `.view--portfolio` form (1370), and a
   single-column collapse at ≤1023px (1245). `.card img` already declares `aspect-ratio`,
   `object-fit: cover`, an 8px radius and a two-layer shadow. **It is already a thumbnail style.**
-- **`.view-toggle` / `.view-toggle-thumb`** (styles.css:990-1053) — a finished two-state segmented
+- **`.view-toggle` / `.view-toggle-thumb`** (styles.css:957-1010) — a finished two-state segmented
   control with an animated thumb, already reduced-motion-aware (1330). This is the **Board / Read**
   switch, already built.
-- `.skip-link` (styles.css:144-158) — reuse for "Skip the canvas — read this page as text."
+- `.skip-link` (styles.css:142-158) — reuse for "Skip the canvas — read this page as text."
+
+**Re-verify these selectors at Phase 5.** The gallery CSS shifted more than anything else when
+`main` moved (`.work-item` went from ~229 to 96; `.card` no longer appears as a top-level
+selector, only in compound rules), so confirm the exact rules before building against them.
 
 Two overrides will be needed: `.card--week img { aspect-ratio: 16/10 }` (the default `4/5` is a
 portrait crop, wrong for a landscape board), and remapping the hardcoded `.card .context` `#767676`
@@ -116,16 +120,24 @@ worker/
   src/{worker,CanvasRoom,IndexRoom,assetUploads,bookmarkUnfurling,seed,rollover}.ts
   src/seed-template.json
 public/                       served at / in dev AND build
-  read.html                   ← git mv of today's index.html, zero diff
-  styles.css  pix/  pdf/  CNAME
+  pix/  pdf/  CNAME
 .github/workflows/{pages,thumbnail}.yml
 ```
 
-Vite serves `publicDir` at `/` in both dev and build, so `read.html`'s `href="styles.css"` and
-`src="pix/…"` resolve exactly as they do today — no `<base>` tag, no CI rewriting, no edits to the
-962-line file. `CNAME` lands in `dist/` automatically.
+**`index.html` stays at root and `styles.css` stays beside it.** Vite's default entry *is*
+`index.html`, so the hand-written page is adopted as-is and simply gains one module script; the
+markup, the IIFE and the Cuelume script are untouched. An earlier draft of this plan moved the page
+to `public/read.html` and built a separate shell — that duplicates the landing markup and the
+~870-line IIFE across two files that must then be kept in sync, so it was rejected.
+`styles.css` is bundled through the existing `<link>`; moving it to `public/` would break Vite's
+asset graph for no gain.
 
-The canvas shell **links** `/styles.css` rather than importing it, so there is one copy and no drift.
+Vite serves `publicDir` at `/`, so `/pix/…` and `/pdf/…` resolve exactly as they do today and
+`CNAME` lands in `dist/` automatically. Asset references in `index.html` need a leading slash
+(`/pix/AWIP-Favicon.png`) so Vite treats them as public assets rather than trying to bundle them.
+
+Progressive enhancement is therefore structural: the text is the document, and the canvas mounts
+over it. There is no second copy to drift.
 
 ### 2. Worker and Durable Objects
 
@@ -193,16 +205,16 @@ the fiddliest part of Phase 4 — budget real time for it.
 
 Stamp `meta: { seed: true }` on every seeded shape; §6 uses it to make them undeletable.
 
-`shared/liveData.ts` lifts the seven fetch blocks out of `index.html` (weather :462 + `WMO` :167 +
-`formatTime12` :180; MTA :541 + maps :544-600; Mets :585; S&P :642; Wikipedia Top 25 :725; ISS :760;
-On This Day :845 + `cleanOtdText` :807) as pure fetch-and-parse functions returning *data*. Two thin
+`shared/liveData.ts` lifts the seven fetch blocks out of `index.html` (weather :449 + `WMO` :159 +
+`formatTime12` :173; MTA :519; Mets :563; S&P :620; Wikipedia Top 25 :660-668; ISS :731;
+On This Day :816 + `cleanOtdText` :778) as pure fetch-and-parse functions returning *data*. Two thin
 renderers sit on top: the existing DOM path (unchanged) and `toSeedTokens()`. Share the fetching,
 never the DOM manipulation.
 
 Server-side, CORS is irrelevant: hit `stooq.com` directly instead of the
 `orange-bread-05b4.smmhrdmn.workers.dev` proxy, and drop `&origin=*` from the Wikipedia call.
 Wrap everything in `Promise.allSettled` with a per-source timeout mirroring the existing
-`PER_FETCH_TIMEOUT_MS = 2000` — **the cron must never fail to create a week because the MTA feed is
+`PER_FETCH_TIMEOUT_MS = 2000` (`index.html:394`) — **the cron must never fail to create a week because the MTA feed is
 down.**
 
 Also seed a **locked** cluster of the ~45 images in `pix/` (Recidiviz, PRX, Overton, Mythril…),
@@ -235,7 +247,7 @@ This works out better than expected: tldraw's entire chrome is CSS-custom-proper
 **Layer 1 — chrome, pure CSS, no JS bridge.** Remap those onto the existing tokens inside
 `.tl-container`, with `--tl-color-background: transparent` so the body sky gradient shows through.
 Because `--bg-top`, `--text`, `--text-muted`, `--accent` are `@property`-registered as `<color>`
-(styles.css:20-28) with a 1200ms transition on `html` (49-56), **the tldraw toolbar crossfades with
+(styles.css:22-28) with a 1200ms transition on `html` (49), **the tldraw toolbar crossfades with
 the page for free.** This is the elegant part of the whole plan.
 
 Caveats to check in-browser: `--widget-bg` and `--selection-bg` are *not* `@property`-registered and
@@ -243,11 +255,11 @@ will snap rather than fade; and `color-mix()` reading an animating registered pr
 verifying in Firefox specifically.
 
 **Layer 2 — light/dark.** `paintTheme()` already toggles `.theme-dark` on `<html>`
-(`index.html:374`). Lift `computeTheme`/`setThemeVars`/`paintTheme` into `src/theme/sky.ts` and pass
+(`index.html:361`). Lift `computeTheme`/`setThemeVars`/`paintTheme` into `src/theme/sky.ts` and pass
 `colorScheme` to `<Tldraw>` on each paint. Hide tldraw's own dark-mode menu item — the sky decides.
 
-Everything from the color math through `computeTheme()` (`index.html:197-355`) is **pure functions
-over numbers**; only `setThemeVars()` touches the DOM. So the page, the canvas, and the Worker can
+Everything from the color math through `computeTheme()` (`index.html:189-345`) is **pure functions
+over numbers**; only `setThemeVars()` (`index.html:346-362`) touches the DOM. So the page, the canvas, and the Worker can
 share one palette implementation — which lets the rollover seed each week's shapes in that week's
 own sky colors. A frozen January week and a frozen July week then look different in the gallery, for
 the right reason.
@@ -291,7 +303,7 @@ estimated, not measured. Put `rollup-plugin-visualizer` in Phase 1 before commit
 **The shell must be readable before tldraw loads and must never block on it.** The new root
 `index.html` ships the same `<title>`/`og:` tags, the four landing paragraphs as **real static
 HTML**, `/styles.css`, a ~2 KB inline bootstrap so the sky paints instantly, a `<noscript>` pointing
-at `/read.html`, and the `.view-toggle` as a **Board / Read** switch. Then
+in the document itself, and the `.view-toggle` as a **Board / Read** switch. Then
 `React.lazy(() => import('./CanvasRoom'))` behind an explicit affordance.
 
 **Stay in text mode and don't even prefetch** when any of: `saveData`, `effectiveType` 2g/slow-2g,
@@ -300,7 +312,7 @@ canvas on a phone is bad *and* it is 1.3 MB of cell data. Default mobile to text
 thumbnail linking into the gallery. That is a better mobile experience, not a consolation prize.
 
 **Reduced motion**: other people's cursors moving is motion you cannot opt out of, so don't autoload
-the canvas at all under it. The existing block (styles.css:1295-1338) already handles the rest.
+the canvas at all under it. The existing block (styles.css:1266+) already handles the rest.
 
 **Be honest about a11y**: tldraw's canvas is not meaningfully keyboard- or screen-reader-navigable
 and no amount of ARIA changes that. State the contract instead — the canvas is an enhancement; the
@@ -343,7 +355,7 @@ sustained traffic. Confirm before Phase 2.
 
 | Phase | Scope |
 |---|---|
-| **0** | Plumbing, zero visible change. `git mv index.html public/read.html`; move `styles.css`/`pix`/`pdf`/`CNAME` to `public/`; add Vite + workflow; flip the Pages source. **Request the hobby license now.** |
+| **0** | Plumbing, zero visible change. `git mv pix pdf CNAME public/`; add Vite + workflow; adopt `index.html` as the Vite entry. Flip the Pages source. **Request the hobby license now.** |
 | **1** | Canvas, no backend — `useSyncDemo({roomId})` runs against tldraw's demo server. Settles the theme bridge, lazy-load gate, mobile fallback, license key, and **measures the bundle** with zero infrastructure. |
 | **2** | Real Worker: port the template, R2 bucket, custom domain, swap `useSyncDemo` → `useSync`. One hardcoded room. |
 | **3** | Weeks: `shared/week.ts`, `IndexRoom`, `/api/current`, hourly cron, freeze-to-R2. Test with `?fakeNow=` before trusting the cron. Soft-launch here, URL unshared. |
@@ -364,7 +376,7 @@ sustained traffic. Confirm before Phase 2.
   transition, not zero and not two.
 - **Gallery**: `/w/…` loads with **zero WebSocket connections** — check the Network panel; that is
   the actual assertion. Grid reflows to one column at 1023px.
-- **Theme**: use the existing Theme Lab (`theme-lab.js`, localhost-only, `index.html:393-398`) to
+- **Theme**: use the existing Theme Lab (`theme-lab.js`, localhost-only, `index.html:381-386`) to
   scrub hour 0→23; confirm the tldraw chrome crossfades in step and stays AA-legible at every hour.
   Chrome, Safari, **and Firefox** — the `@property` + `color-mix()` combination is the fragile bit.
 - **Performance**: Lighthouse on `/` **without opening the canvas** should hold ≥95 at ~100 KB

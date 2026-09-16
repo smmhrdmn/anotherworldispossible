@@ -28,8 +28,9 @@ easing-token consolidation.
 ---
 
 **004** is independent of 001-003 and much larger in scope: it introduces a
-build step, a React app, and a Cloudflare Worker, and it moves `index.html`
-to `public/read.html`. It is phased internally (Phase 0 is plumbing-only,
-zero visible change) — read its Phasing table before starting. Because it
-relocates `index.html` and `styles.css`, land any pending edits to those
-files before Phase 0 rather than after.
+build step, a React app, and a Cloudflare Worker. `index.html` and
+`styles.css` stay where they are — Vite adopts `index.html` as its entry, so
+the hand-written page keeps working and just gains a module script. Only
+`pix/`, `pdf/` and `CNAME` move (to `public/`), and their URLs are unchanged.
+It is phased internally (Phase 0 is plumbing-only, zero visible change) —
+read its Phasing table before starting.

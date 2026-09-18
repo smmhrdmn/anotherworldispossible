@@ -738,7 +738,12 @@ footer {
 }
 
 .landing-cta-link.is-loaded {
-  animation: focusFade 900ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  /* Opacity-only, unlike the sentences: a pill never starts blurred, so
+     focusFade's `to { filter: blur(0) }` would resolve nothing and then sit
+     on the element forever (fill-mode: forwards). A non-none filter makes
+     the pill a backdrop root, which starves its own backdrop-filter of the
+     page behind it and re-rasterizes the label off the text layer. */
+  animation: fadeOnly 900ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
   animation-delay: calc(var(--i, 0) * 200ms);
 }
 
